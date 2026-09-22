@@ -10,7 +10,7 @@ logging.basicConfig(
 )
 
 # خواندن خودکار توکن از متغیرهای محیطی رندر (یا جایگذاری به عنوان پشتیبان)
-TOKEN = os.environ.get("TELEGRAM_TOKEN", "8627933053:AAFXegsURLKgkoQNI4Ov_gf7vT7kTA2V7tU")
+TOKEN = os.environ.get("TELEGRAM_TOKEN", "8627933053:AAG1-UaJK5DkKpa330nvd3WmBepC8psEVg0")
 
 # ═══════════════════════════════════════════
 # ✏️ اطلاعات تماس
