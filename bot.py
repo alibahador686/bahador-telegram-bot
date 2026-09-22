@@ -1,12 +1,21 @@
+import os
+import logging
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
 
-TOKEN = "8627933053:AAFXegsURLKgkoQNI4Ov_gf7vT7kTA2V7tU"   # 👈 توکن ربات خودتان را اینجا قرار دهید
+# تنظیمات لاگ‌گیری استاندارد
+logging.basicConfig(
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    level=logging.INFO
+)
+
+# خواندن خودکار توکن از متغیرهای محیطی رندر (یا جایگذاری به عنوان پشتیبان)
+TOKEN = os.environ.get("TELEGRAM_TOKEN", "8627933053:AAFXegsURLKgkoQNI4Ov_gf7vT7kTA2V7tU")
 
 # ═══════════════════════════════════════════
 # ✏️ اطلاعات تماس
 # ═══════════════════════════════════════════
-PHONE = "09215680114"             # 👈 شماره تماس واقعی
+PHONE = "09215680114"              # 👈 شماره تماس واقعی
 INSTAGRAM = "alibahador.director"   # ✅ اینستاگرام
 WEBSITE = "https://alibahador.ir/"
 # ═══════════════════════════════════════════
@@ -276,12 +285,7 @@ async def buttons(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 def main():
-    # ساخت اپلیکیشن به صورت استاندارد بدون نیاز به پروکسی محلی
-    app = (
-        Application.builder()
-        .token(TOKEN)
-        .build()
-    )
+    app = Application.builder().token(TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CallbackQueryHandler(buttons))
     print("Bot is running! Press Ctrl+C to stop.")
