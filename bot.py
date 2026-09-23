@@ -1,5 +1,7 @@
 import os
 import logging
+from threading import Thread
+from flask import Flask
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
 
@@ -9,13 +11,25 @@ logging.basicConfig(
     level=logging.INFO
 )
 
+# راه‌اندازی وب‌سرور ساده Flask برای پاسخ به پورت رندر و جلوگیری از خطای Timeout
+app_web = Flask(__name__)
+
+@app_web.route('/')
+def home():
+    return "Bot is active and running!"
+
+def run_web():
+    # رندر پورت را به صورت خودکار از طریق متغیر محیطی PORT مشخص می‌کند
+    port = int(os.environ.get("PORT", 10000))
+    app_web.run(host="0.0.0.0", port=port)
+
 # خواندن خودکار توکن از متغیرهای محیطی رندر (یا جایگذاری به عنوان پشتیبان)
 TOKEN = os.environ.get("TELEGRAM_TOKEN", "8627933053:AAG1-UaJK5DkKpa330nvd3WmBepC8psEVg0")
 
 # ═══════════════════════════════════════════
 # ✏️ اطلاعات تماس
 # ═══════════════════════════════════════════
-PHONE = "09215680114"              # 👈 شماره تماس واقعی
+PHONE = "09215680114"                 # 👈 شماره تماس واقعی
 INSTAGRAM = "alibahador.director"   # ✅ اینستاگرام
 WEBSITE = "https://alibahador.ir/"
 # ═══════════════════════════════════════════
@@ -285,10 +299,16 @@ async def buttons(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 def main():
+    # اجرای وب‌سرور Flask در یک ترد (Thread) جداگانه برای پاس کردن بررسی پورت رندر
+    t = Thread(target=run_web)
+    t.daemon = True
+    t.start()
+
+    # اجرای ربات تلگرام
     app = Application.builder().token(TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CallbackQueryHandler(buttons))
-    print("Bot is running! Press Ctrl+C to stop.")
+    print("Bot is running with Flask web server! Press Ctrl+C to stop.")
     app.run_polling()
 
 
