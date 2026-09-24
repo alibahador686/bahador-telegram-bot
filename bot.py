@@ -15,6 +15,9 @@ logger = logging.getLogger(__name__)
 # توکن ربات (خوانده شده از متغیرهای محیطی رندر)
 TOKEN = os.environ.get("TELEGRAM_TOKEN", "8627933053:AAG1-UaJK5DkKpa330nvd3WmBepC8psEVg0")
 
+# آیدی عددی ادمین (برای دریافت مستقیم پیام‌ها)
+ADMIN_CHAT_ID = 198728977
+
 # متغیرهای ذخیره آمار ساده
 stats_data = {
     "total_visits": 0,
@@ -291,6 +294,19 @@ async def receive_user_phone(update: Update, context: ContextTypes.DEFAULT_TYPE)
         "کارشناسان مؤسسه هنری بهادر فیلم به زودی با شما تماس خواهند گرفت."
     )
     
+    # ارسال جزئیات سفارش به ادمین
+    admin_order_notification = (
+        "🔔 **سفارش جدید ثبت شد!**\n\n"
+        f"▫️ نوع پروژه: {p_type}\n"
+        f"▫️ نام کاربر: {u_name}\n"
+        f"▫️ شماره تماس: {u_phone}\n"
+        f"▫️ آیدی تلگرام: @{update.effective_user.username if update.effective_user.username else 'ندارد'} (ID: {update.effective_user.id})"
+    )
+    try:
+        await context.bot.send_message(chat_id=ADMIN_CHAT_ID, text=admin_order_notification, parse_mode="Markdown")
+    except Exception as e:
+        logger.error(f"Failed to send order notification to admin: {e}")
+
     keyboard = [[InlineKeyboardButton("🔙 بازگشت به منوی اصلی", callback_data="back_to_menu")]]
     await update.message.reply_text(summary, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
     return ConversationHandler.END
@@ -313,6 +329,20 @@ async def receive_admin_message(update: Update, context: ContextTypes.DEFAULT_TY
     user = update.effective_user
     
     logger.info(f"New message from {user.full_name} ({user.id}): {user_msg}")
+    
+    # ساخت متن پیام برای ارسال مستقیم به ادمین
+    forward_text = (
+        "💬 **پیام جدید از مخاطب ربات:**\n\n"
+        f"👤 فرستنده: {user.full_name}\n"
+        f"🔗 نام کاربری: @{user.username if user.username else 'ندارد'} (ID: {user.id})\n\n"
+        f"📝 متن پیام:\n{user_msg}"
+    )
+    
+    try:
+        # ارسال مستقیم پیام به چت خصوصی ادمین
+        await context.bot.send_message(chat_id=ADMIN_CHAT_ID, text=forward_text, parse_mode="Markdown")
+    except Exception as e:
+        logger.error(f"Failed to forward message to admin: {e}")
     
     keyboard = [[InlineKeyboardButton("🔙 بازگشت به منوی اصلی", callback_data="back_to_menu")]]
     await update.message.reply_text(
@@ -356,7 +386,7 @@ def main():
     application.add_handler(admin_msg_handler)
     application.add_handler(CallbackQueryHandler(button_handler))
 
-    print("Bot is running with four decades of experience!")
+    print("Bot is running with admin forward feature!")
     application.run_polling()
 
 if __name__ == '__main__':
