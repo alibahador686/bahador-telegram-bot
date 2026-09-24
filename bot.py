@@ -36,7 +36,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "Bahador Film Bot is running live with 12 portfolio photo IDs support!"
+    return "Bahador Film Bot is running live with complete portfolio photo IDs support!"
 
 @app.route('/stats')
 def stats():
@@ -52,7 +52,7 @@ def run_flask():
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
 
-# منوی اصلی ربات
+# منوی اصلی ربات (شامل لوگو/تصویر شاخص در صورت نیاز یا دکمه‌های جامع)
 def get_main_menu():
     keyboard = [
         [InlineKeyboardButton("🎬 نمونه کارها و رزومه", callback_data="portfolio"), InlineKeyboardButton("👤 درباره مدیرعامل", callback_data="about")],
@@ -92,7 +92,7 @@ async def stats_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
     await update.message.reply_text(text, parse_mode="Markdown")
 
-# مدیریت کلیک دکمه‌ها و نمایش تصاویر آثار ۱۲ گانه و مصاحبه‌ها
+# مدیریت کلیک دکمه‌ها و نمایش تصاویر آثار و بخش‌ها
 async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
@@ -115,6 +115,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton("📽️ مستندهای تلویزیونی و بین‌المللی", callback_data="port_docs")],
             [InlineKeyboardButton("⛽ پروژه ملی و کتاب مرجع گاز", callback_data="port_gas")],
             [InlineKeyboardButton("🎨 انیمیشن‌های آموزشی و طنز", callback_data="port_anim")],
+            [InlineKeyboardButton("🏆 جوایز و لوح‌های سپاس", callback_data="port_awards")],
             [InlineKeyboardButton("🌐 وب‌سایت رسمی", url="https://alibahador.ir"), InlineKeyboardButton("📸 اینستاگرام", url="https://instagram.com")],
             [InlineKeyboardButton("🔙 بازگشت به منوی اصلی", callback_data="back_to_menu")]
         ]
@@ -132,10 +133,12 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif data == "port_series":
         keyboard = [
             [InlineKeyboardButton("📺 بهترین تابستان من (۱۳۷۲)", callback_data="work_tabestan")],
-            [InlineKeyboardButton("📺 عشق سال‌های جنگ (۱۳۷۹)", callback_data="work_eshgh")],
+            [InlineKeyboardButton("📺 عشق سال‌های جنگ (۱۳۷۹ - ۱۳۸۰)", callback_data="work_eshgh")],
             [InlineKeyboardButton("📺 شب هزار و یکم (۱۳۸۸)", callback_data="work_shab")],
             [InlineKeyboardButton("🎬 قدم زدن در بهشت (۱۳۹۱)", callback_data="work_ghadam")],
-            [InlineKeyboardButton("🎬 ارثیه پرماجرا و شاهزاده و گدا", callback_data="work_ershieh")],
+            [InlineKeyboardButton("🎬 ارثیه پرماجرا (۱۳۹۳)", callback_data="work_ershieh")],
+            [InlineKeyboardButton("🎬 شاهزاده و گدا (۱۳۹۳)", callback_data="work_shahzadeh")],
+            [InlineKeyboardButton("🎬 مشتری‌مداری (۱۴۰۱)", callback_data="work_moshtari")],
             [InlineKeyboardButton("🎬 برکت (۱۳۹۷)", callback_data="work_barakat")],
             [InlineKeyboardButton("🔙 بازگشت به نمونه کارها", callback_data="portfolio")]
         ]
@@ -149,9 +152,8 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # --- دسته‌بندی ۲: مستندها ---
     elif data == "port_docs":
         keyboard = [
-            [InlineKeyboardButton("📽️ مستند «زندگی» (برنده ۳ جایزه)", callback_data="work_zendegi")],
-            [InlineKeyboardButton("📽️ مستندهای برون‌مرزی (نوروز در آسیای میانه)", callback_data="work_nowruz")],
-            [InlineKeyboardButton("📽️ مستند کنگره جهانی گاز پاریس ۲۰۱۵", callback_data="work_paris")],
+            [InlineKeyboardButton("📽️ مستند «زندگی»", callback_data="work_zendegi")],
+            [InlineKeyboardButton("📽️ مستند کنگره جهانی گاز پاریس (۲۰۱۵)", callback_data="work_paris")],
             [InlineKeyboardButton("🔙 بازگشت به نمونه کارها", callback_data="portfolio")]
         ]
         text = "📽️ **مستندهای تلویزیونی و بین‌المللی:**\n\nلطفاً مستند مورد نظر خود را انتخاب کنید:"
@@ -187,14 +189,28 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception:
             pass
 
-    # ================= آثاره ۱۲ گانه (ارسال عکس با File ID) =================
+    # --- دسته‌بندی ۵: جوایز و لوح‌های سپاس ---
+    elif data == "port_awards":
+        keyboard = [
+            [InlineKeyboardButton("🏆 لوح تقدیر جشنواره رشد و دفاع مقدس", callback_data="award_roshd")],
+            [InlineKeyboardButton("🏆 لوح‌ها و تندیس‌های تقدیر ویژه", callback_data="award_tandis")],
+            [InlineKeyboardButton("🔙 بازگشت به نمونه کارها", callback_data="portfolio")]
+        ]
+        text = "🏆 **افتخارات، جوایز و لوح‌های سپاس:**\n\nلطفاً گزینه مورد نظر را انتخاب کنید:"
+        await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
+
+    # ================= نمایش آثار و تصاویر با شناسه‌های ثبت‌شده (File IDs) =================
     
     # 1. بهترین تابستان من
     elif data == "work_tabestan":
         kb = [[InlineKeyboardButton("🔙 بازگشت به سریال‌ها", callback_data="port_series")]]
-        caption = "📺 **بهترین تابستان من (۱۳۷۲)**\nکارگردانی سریال طنز دفاع مقدس در ۸ قسمت؛ پرمخاطب‌ترین مجموعه تلویزیونی زمان پخش."
+        caption = "📺 **بهترین تابستان من**\nکارگردانی سریال طنز دفاع مقدس؛ پرمخاطب‌ترین مجموعه تلویزیونی زمان پخش."
         try:
-            await query.message.reply_photo(photo="AgACAgQAAxkBAANoarTyji_W7N_W-vV6J45R2IeC2lQAAkIQaxslQqhR6l10W2uK3s0BAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+            await query.message.reply_photo(photo="AgACAgQAAxkBAANZarTpN4VZ_zuBvY8qfr8XmbNw7pkAAjQQaxslQqhRXfvpAAFEs83zAQADAgADeQADPQQ", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
         except Exception:
             await query.message.reply_text(caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
         try:
@@ -205,9 +221,9 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # 2. عشق سال‌های جنگ
     elif data == "work_eshgh":
         kb = [[InlineKeyboardButton("🔙 بازگشت به سریال‌ها", callback_data="port_series")]]
-        caption = "📺 **عشق سال‌های جنگ (۱۳۷۹)**\nکارگردانی و تهیه‌کنندگی مشترک در ۱۳ قسمت ۴۵ دقیقه‌ای با موضوع دفاع مقدس."
+        caption = "📺 **عشق سال‌های جنگ**\nکارگردانی و تهیه‌کنندگی سریال با موضوع دفاع مقدس و درام اجتماعی."
         try:
-            await query.message.reply_photo(photo="AgACAgQAAxkBAANparTymmR9Z4TjXz5b6b80lX081UIAAkMQaxslQqhR19Z12K5s02wBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+            await query.message.reply_photo(photo="AgACAgQAAxkBAANearTvmlgwxRnFLGAlGWxU8rkT-1AAAjgQaxslQqhR53FaIRSpKHYBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
         except Exception:
             await query.message.reply_text(caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
         try:
@@ -218,9 +234,9 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # 3. شب هزار و یکم
     elif data == "work_shab":
         kb = [[InlineKeyboardButton("🔙 بازگشت به سریال‌ها", callback_data="port_series")]]
-        caption = "📺 **شب هزار و یکم (۱۳۸۸)**\nکارگردانی سریال ۲۳ قسمتی با موضوع نقش پزشکان در دفاع مقدس، محصول شبکه اول سیما."
+        caption = "📺 **شب هزار و یکم**\nکارگردانی سریال تلویزیونی با حضور بازیگران برجسته، محصول شبکه اول سیما."
         try:
-            await query.message.reply_photo(photo="AgACAgQAAxkBAANqarTyn5t-q8Xv6j21l5R7lX081UIAAkQQaxslQqhR29Z12K5s02wBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+            await query.message.reply_photo(photo="AgACAgQAAxkBAANwarTyYMpvBUdAvWgxpNDsokdZzAkAAkQQaxslQqhR0jS6MO2oIdQBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
         except Exception:
             await query.message.reply_text(caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
         try:
@@ -231,9 +247,9 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # 4. قدم زدن در بهشت
     elif data == "work_ghadam":
         kb = [[InlineKeyboardButton("🔙 بازگشت به سریال‌ها", callback_data="port_series")]]
-        caption = "🎬 **قدم زدن در بهشت (۱۳۹۱)**\nکارگردانی تله‌فیلم با نوگرایی خاص و ساختار سینمایی."
+        caption = "🎬 **قدم زدن در بهشت**\nکارگردانی تله‌فیلم با ساختار سینمایی و نوآورانه."
         try:
-            await query.message.reply_photo(photo="AgACAgQAAxkBAANrarTypM9q5Xv6j21l5R7lX081UIAAkUQaxslQqhR39Z12K5s02wBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+            await query.message.reply_photo(photo="AgACAgQAAxkBAANiarTwitFl3GizqfXA940Rm6KoAywAAjsQaxslQqhRLcDSK7px4JIBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
         except Exception:
             await query.message.reply_text(caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
         try:
@@ -241,12 +257,12 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception:
             pass
 
-    # 5. ارثیه پرماجرا و شاهزاده و گدا
+    # 5. ارثیه پرماجرا
     elif data == "work_ershieh":
         kb = [[InlineKeyboardButton("🔙 بازگشت به سریال‌ها", callback_data="port_series")]]
-        caption = "🎬 **ارثیه پرماجرا و شاهزاده و گدا (۱۳۹۳)**\nتهیه‌کنندگی فیلم‌های سینمایی-ویدیویی پرمخاطب."
+        caption = "🎬 **ارثیه پرماجرا**\nتهیه‌کنندگی فیلم سینمایی-ویدیویی پرمخاطب با حضور بازیگران سرشناس."
         try:
-            await query.message.reply_photo(photo="AgACAgQAAxkBAANsarTypw8_zNq6jilkshH7l-IZl_8AAkUQaxslQqhR_zB2Ple2rxMBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+            await query.message.reply_photo(photo="AgACAgQAAxkBAANkarTw6xfxZ84odXO_PlgJBVLWvY8AAjwQaxslQqhR3hmwjUYRM0wBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
         except Exception:
             await query.message.reply_text(caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
         try:
@@ -254,12 +270,38 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception:
             pass
 
-    # 6. برکت
+    # 6. شاهزاده و گدا
+    elif data == "work_shahzadeh":
+        kb = [[InlineKeyboardButton("🔙 بازگشت به سریال‌ها", callback_data="port_series")]]
+        caption = "🎬 **شاهزاده و گدا (۱۳۹۳)**\nمحصول موسسه هنری بهادر فیلم به تهیه‌کنندگی علی بهادر."
+        try:
+            await query.message.reply_photo(photo="AgACAgQAAxkBAANmarTxHy9f8plmCbwBwH-n-0U3eUcAAj4QaxslQqhR79dvxxWcmpIBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+        except Exception:
+            await query.message.reply_text(caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
+
+    # 7. مشتری‌مداری
+    elif data == "work_moshtari":
+        kb = [[InlineKeyboardButton("🔙 بازگشت به سریال‌ها", callback_data="port_series")]]
+        caption = "🎬 **مشتری‌مداری (۱۴۰۱)**\nسریال آموزشی ۳۰ قسمتی به تهیه‌کنندگی و کارگردانی علی بهادر."
+        try:
+            await query.message.reply_photo(photo="AgACAgQAAxkBAANqarTxuueYW1gjMcHlaCaDZJXtJ1EAAkEQaxslQqhR-aYKXskUhHIBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+        except Exception:
+            await query.message.reply_text(caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
+
+    # 8. برکت
     elif data == "work_barakat":
         kb = [[InlineKeyboardButton("🔙 بازگشت به سریال‌ها", callback_data="port_series")]]
         caption = "🎬 **برکت (۱۳۹۷)**\nتهیه‌کنندگی و کارگردانی مینی‌سریال تولید شده در بنیاد برکت."
         try:
-            await query.message.reply_photo(photo="AgACAgQAAxkBAANtarTyqXz9nKqjilkshH7l-IZl_8AAkUQaxslQqhR_zB2Ple2rxMBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+            await query.message.reply_photo(photo="AgACAgQAAxkBAANuarTyOwkGmkfs6tcNodNBGzujgCwAAkMQaxslQqhRRxnzoph9E4EBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
         except Exception:
             await query.message.reply_text(caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
         try:
@@ -267,12 +309,12 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception:
             pass
 
-    # 7. مستند زندگی
-    elif data == "work_zendegi":
-        kb = [[InlineKeyboardButton("🔙 بازگشت به مستندها", callback_data="port_docs")]]
-        caption = "📽️ **مستند «زندگی»**\nکارگردانی مستند درباره محسن محسنی؛ برنده سه جایزه از جشنواره فیلم دفاع مقدس، جشنواره رشد و جشنواره همدان."
+    # 9. کتاب مرجع گاز
+    elif data == "work_gas_book":
+        kb = [[InlineKeyboardButton("🔙 بازگشت به پروژه‌های گاز", callback_data="port_gas")]]
+        caption = "📚 **کتاب مرجع «گاز؛ انرژی پاک با نیم قرن تلاش»**\n۱۰۱۸ صفحه، تاریخ شفاهی ۵۰ ساله شرکت ملی گاز ایران."
         try:
-            await query.message.reply_photo(photo="AgACAgQAAxkBAANuarTyrV8_zNq6jilkshH7l-IZl_8AAkUQaxslQqhR_zB2Ple2rxMBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+            await query.message.reply_photo(photo="AgACAgQAAxkBAANsarTx9X_9z_IFk7DvWGmtVGkGB0AAAkIQaxslQqhRUjAa4c-6XLwBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
         except Exception:
             await query.message.reply_text(caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
         try:
@@ -280,23 +322,10 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception:
             pass
 
-    # 8. مستندهای برون‌مرزی
-    elif data == "work_nowruz":
-        kb = [[InlineKeyboardButton("🔙 بازگشت به مستندها", callback_data="port_docs")]]
-        caption = "📽️ **مستندهای برون‌مرزی (نوروز در آسیای میانه)**\nتصویربرداری و کارگردانی آیین‌های نوروزی در تاجیکستان، ازبکستان، ترکمنستان و قزاقستان."
-        try:
-            await query.message.reply_photo(photo="AgACAgQAAxkBAANvarTysXz-nKqjilkshH7l-IZl_8AAkUQaxslQqhR_zB2Ple2rxMBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
-        except Exception:
-            await query.message.reply_text(caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
-        try:
-            await query.message.delete()
-        except Exception:
-            pass
-
-    # 9. مستند پاریس ۲۰۱۵
+    # 10. مستند کنگره جهانی گاز پاریس ۲۰۱۵
     elif data == "work_paris":
         kb = [[InlineKeyboardButton("🔙 بازگشت به مستندها", callback_data="port_docs")]]
-        caption = "📽️ **مستند کنگره جهانی گاز پاریس ۲۰۱۵**\nمستند ۳۰ دقیقه‌ای با حضور مدیرعامل وقت شرکت ملی گاز ایران در پاریس ۲۰۱۵."
+        caption = "📽️ **مستند کنگره جهانی گاز پاریس ۲۰۱۵**\nمستند تخصصی صنعتی و بین‌المللی."
         try:
             await query.message.reply_photo(photo="AgACAgQAAxkBAANyarTyuYCz-nKqjilkshH7l-IZl_8AAkUQaxslQqhR_zB2Ple2rxMBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
         except Exception:
@@ -306,12 +335,12 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception:
             pass
 
-    # 10. کتاب مرجع گاز
-    elif data == "work_gas_book":
-        kb = [[InlineKeyboardButton("🔙 بازگشت به پروژه‌های گاز", callback_data="port_gas")]]
-        caption = "📚 **کتاب مرجع «گاز؛ انرژی پاک با نیم قرن تلاش»**\n۱۰۱۸ صفحه، تاریخ شفاهی ۵۰ ساله شرکت ملی گاز ایران رونمایی شده در جشن پنجاهمین سالگرد."
+    # 11. مستند زندگی
+    elif data == "work_zendegi":
+        kb = [[InlineKeyboardButton("🔙 بازگشت به مستندها", callback_data="port_docs")]]
+        caption = "📽️ **مستند «زندگی»**\nبرنده جوایز متعدد از جشنواره‌های معتبر ملی."
         try:
-            await query.message.reply_photo(photo="AgACAgQAAxkBAANzarTyvYF0-nKqjilkshH7l-IZl_8AAkUQaxslQqhR_zB2Ple2rxMBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+            await query.message.reply_photo(photo="AgACAgQAAxkBAANoarTxcvaLVFFDuPSMVCLQ6XXcCEgAAj8QaxslQqhRHyuGPLEPCTYBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
         except Exception:
             await query.message.reply_text(caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
         try:
@@ -319,12 +348,12 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception:
             pass
 
-    # 11. انیمیشن اسرافی و انصافی
+    # 12. انیمیشن اسرافی و انصافی (یا سایر آثار باقی‌مانده)
     elif data == "work_esrafi":
         kb = [[InlineKeyboardButton("🔙 بازگشت به انیمیشن‌ها", callback_data="port_anim")]]
-        caption = "🎨 **انیمیشن آموزشی «اسرافی و انصافی»**\nمجموعه ۳۰ قسمتی انیمیشن طنز با محوریت ایمنی گاز شهری و مشاوره کاراکتر انصافی."
+        caption = "🎨 **انیمیشن آموزشی «اسرافی و انصافی»**\nمجموعه ۳۰ قسمتی طنز با محوریت ایمنی گاز شهری."
         try:
-            await query.message.reply_photo(photo="AgACAgQAAxkBAAN0arTywZ0-nKqjilkshH7l-IZl_8AAkUQaxslQqhR_zB2Ple2rxMBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+            await query.message.reply_photo(photo="AgACAgQAAxkBAANgarTwM3C7YugVl34Zx5zmdfqblxEAAjoQaxslQqhRjoQOS53pRBEBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
         except Exception:
             await query.message.reply_text(caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
         try:
@@ -332,17 +361,42 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception:
             pass
 
-    # ================= پایان آثار ۱۲ گانه =================
+    # 13. جوایز و لوح‌های تقدیر (۱۵ الی ۱۸)
+    elif data == "award_roshd":
+        kb = [[InlineKeyboardButton("🔙 بازگشت به جوایز", callback_data="port_awards")]]
+        caption = "🏆 **لوح تقدیر جشنواره بین‌المللی فیلم رشد و جشنواره دفاع مقدس**"
+        try:
+            await query.message.reply_photo(photo="AgACAgQAAxkBAAOBarT63lwTbK1i98T2La7qVD3q4gEAAlQQaxslQqhRbvL3WI2R2JkBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+        except Exception:
+            await query.message.reply_text(caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
+
+    elif data == "award_tandis":
+        kb = [[InlineKeyboardButton("🔙 بازگشت به جوایز", callback_data="port_awards")]]
+        caption = "🏆 **تندیس‌ها و لوح‌های سپاس و تقدیر ویژه مدیران ارشد**"
+        try:
+            await query.message.reply_photo(photo="AgACAgQAAxkBAAODarT69lI0d1-rQQs-AwTKjAO7WQsAAlUQaxslQqhRpgYVe0-1E6QBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+        except Exception:
+            await query.message.reply_text(caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
+
+    # ================= پایان بخش آثار =================
 
     elif data == "interviews":
         keyboard = [
-            [InlineKeyboardButton("📰 تصویر مصاحبه روزنامه اطلاعات", callback_data="view_ettelaat_img")],
-            [InlineKeyboardButton("📰 تصویر مصاحبه هفته‌نامه صدا و سیما", callback_data="view_sedavasima_img")],
+            [InlineKeyboardButton("📰 مصاحبه روزنامه اطلاعات (۲۰ مرداد ۱۴۰۵)", callback_data="view_ettelaat_img")],
+            [InlineKeyboardButton("📰 مصاحبه هفته‌نامه صدا و سیما (مرداد ۱۴۰۵)", callback_data="view_sedavasima_img")],
             [InlineKeyboardButton("🔙 بازگشت به منوی اصلی", callback_data="back_to_menu")]
         ]
         text = (
             "📰 **بخش مصاحبه‌ها و پوشش رسانه‌ای:**\n\n"
-            "برای مشاهده تصاویر واقعی صفحات روزنامه و هفته‌نامه روی دکمه‌های زیر کلیک کنید:"
+            "برای مشاهده تصاویر و جزئیات مصاحبه‌های علی بهادر روی گزینه‌های زیر کلیک کنید:"
         )
         await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
         try:
@@ -577,7 +631,7 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("عملیات لغو شد.", reply_markup=get_main_menu())
     return ConversationHandler.END
 
-# تابع دریافت خودکار شناسه عکس‌ها (File ID)
+# تابع دریافت خودکار شناسه عکس‌ها (File ID) برای تست‌های بعدی
 async def get_file_id(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message.photo:
         photo_file_id = update.message.photo[-1].file_id
@@ -621,7 +675,7 @@ def main():
     
     application.add_handler(CallbackQueryHandler(button_handler))
 
-    print("Bot is running with all 12 portfolio items and photo support!")
+    print("Bot is running successfully with all complete portfolio photo IDs!")
     application.run_polling()
 
 if __name__ == '__main__':
