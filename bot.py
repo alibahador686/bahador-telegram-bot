@@ -36,7 +36,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "Bahador Film Bot is running live with photo support!"
+    return "Bahador Film Bot is running live with 12 portfolio photo IDs support!"
 
 @app.route('/stats')
 def stats():
@@ -92,7 +92,7 @@ async def stats_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
     await update.message.reply_text(text, parse_mode="Markdown")
 
-# مدیریت کلیک دکمه‌ها و نمایش تصاویر آثار و مصاحبه‌ها
+# مدیریت کلیک دکمه‌ها و نمایش تصاویر آثار ۱۲ گانه و مصاحبه‌ها
 async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
@@ -128,70 +128,211 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception:
             pass
     
+    # --- دسته‌بندی ۱: سریال‌ها و فیلم‌های داستانی ---
     elif data == "port_series":
         keyboard = [
+            [InlineKeyboardButton("📺 بهترین تابستان من (۱۳۷۲)", callback_data="work_tabestan")],
+            [InlineKeyboardButton("📺 عشق سال‌های جنگ (۱۳۷۹)", callback_data="work_eshgh")],
+            [InlineKeyboardButton("📺 شب هزار و یکم (۱۳۸۸)", callback_data="work_shab")],
+            [InlineKeyboardButton("🎬 قدم زدن در بهشت (۱۳۹۱)", callback_data="work_ghadam")],
+            [InlineKeyboardButton("🎬 ارثیه پرماجرا و شاهزاده و گدا", callback_data="work_ershieh")],
+            [InlineKeyboardButton("🎬 برکت (۱۳۹۷)", callback_data="work_barakat")],
             [InlineKeyboardButton("🔙 بازگشت به نمونه کارها", callback_data="portfolio")]
         ]
-        text = (
-            "📺 **سریال‌های تلویزیونی و فیلم‌های داستانی:**\n\n"
-            "1️⃣ **بهترین تابستان من (۱۳۷۲):** کارگردانی سریال طنز دفاع مقدس در ۸ قسمت؛ پرمخاطب‌ترین مجموعه تلویزیونی زمان پخش.\n\n"
-            "2️⃣ **عشق سال‌های جنگ (۱۳۷۹):** کارگردانی و تهیه‌کنندگی مشترک در ۱۳ قسمت ۴۵ دقیقه‌ای با موضوع دفاع مقدس.\n\n"
-            "3️⃣ **شب هزار و یکم (۱۳۸۸):** کارگردانی سریال ۲۳ قسمتی با موضوع نقش پزشکان در دفاع مقدس، محصول شبکه اول سیما.\n\n"
-            "4️⃣ **قدم زدن در بهشت (۱۳۹۱):** کارگردانی تله‌فیلم با نوگرایی خاص.\n\n"
-            "5️⃣ **ارثیه پرماجرا و شاهزاده و گدا (۱۳۹۳):** تهیه‌کنندگی فیلم‌های سینمایی-ویدیویی.\n\n"
-            "6️⃣ **برکت (۱۳۹۷):** تهیه‌کنندگی و کارگردانی مینی‌سریال در بنیاد برکت."
-        )
+        text = "📺 **سریال‌های تلویزیونی و فیلم‌های داستانی:**\n\nلطفاً اثر مورد نظر خود را برای مشاهده پوستر و جزئیات انتخاب کنید:"
         await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
         try:
             await query.message.delete()
         except Exception:
             pass
 
+    # --- دسته‌بندی ۲: مستندها ---
     elif data == "port_docs":
         keyboard = [
+            [InlineKeyboardButton("📽️ مستند «زندگی» (برنده ۳ جایزه)", callback_data="work_zendegi")],
+            [InlineKeyboardButton("📽️ مستندهای برون‌مرزی (نوروز در آسیای میانه)", callback_data="work_nowruz")],
+            [InlineKeyboardButton("📽️ مستند کنگره جهانی گاز پاریس ۲۰۱۵", callback_data="work_paris")],
             [InlineKeyboardButton("🔙 بازگشت به نمونه کارها", callback_data="portfolio")]
         ]
-        text = (
-            "📽️ **مستندهای تلویزیونی و بین‌المللی:**\n\n"
-            "• **مستند «زندگی»:** کارگردانی مستند درباره محسن محسنی؛ برنده سه جایزه از جشنواره فیلم دفاع مقدس، جشنواره رشد و جشنواره همدان.\n"
-            "• **مستندهای برون‌مرزی:** نوروز در تاجیکستان، نوروز در ازبکستان، ترکمنستان، قزاقستان و...\n"
-            "• **مستندهای داخلی:** قدسیان خاک، نخل‌های صبور، عطر میعاد و..."
-        )
+        text = "📽️ **مستندهای تلویزیونی و بین‌المللی:**\n\nلطفاً مستند مورد نظر خود را انتخاب کنید:"
         await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
         try:
             await query.message.delete()
         except Exception:
             pass
 
+    # --- دسته‌بندی ۳: پروژه ملی و کتاب گاز ---
     elif data == "port_gas":
         keyboard = [
+            [InlineKeyboardButton("📚 کتاب مرجع «گاز؛ انرژی پاک...»", callback_data="work_gas_book")],
             [InlineKeyboardButton("🔙 بازگشت به نمونه کارها", callback_data="portfolio")]
         ]
-        text = (
-            "⛽ **پروژه‌های ملی نفت و گاز و کتاب مرجع:**\n\n"
-            "📚 **کتاب مرجع «گاز؛ انرژی پاک با نیم قرن تلاش»:**\n"
-            "۱۰۱۸ صفحه، حاصل ۳۷۰۰ دقیقه گفت‌وگو با پیشکسوتان صنعت گاز به عنوان تاریخ شفاهی ۵۰ ساله شرکت ملی گاز ایران که در جشن پنجاهمین سالگرد با حضور ریاست محترم جمهوری رونمایی شد."
-        )
+        text = "⛽ **پروژه‌های ملی نفت و گاز و کتاب مرجع:**\n\nلطفاً گزینه مورد نظر را انتخاب کنید:"
         await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
         try:
             await query.message.delete()
         except Exception:
             pass
 
+    # --- دسته‌بندی ۴: انیمیشن‌ها ---
     elif data == "port_anim":
         keyboard = [
+            [InlineKeyboardButton("🎨 انیمیشن آموزشی «اسرافی و انصافی»", callback_data="work_esrafi")],
             [InlineKeyboardButton("🔙 بازگشت به نمونه کارها", callback_data="portfolio")]
         ]
-        text = (
-            "🎨 **انیمیشن‌های آموزشی و طنز:**\n\n"
-            "• **مجموعه انیمیشن آموزشی «اسرافی و انصافی»:**\n"
-            "مجموعه ۳۰ قسمتی انیمیشن طنز و آموزشی با محوریت مباحث ایمنی گاز شهری و مشاوره کاراکتر «انصافی» به خانواده اسرافی."
-        )
+        text = "🎨 **انیمیشن‌های آموزشی و طنز:**\n\nلطفاً گزینه مورد نظر را انتخاب کنید:"
         await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
         try:
             await query.message.delete()
         except Exception:
             pass
+
+    # ================= آثاره ۱۲ گانه (ارسال عکس با File ID) =================
+    
+    # 1. بهترین تابستان من
+    elif data == "work_tabestan":
+        kb = [[InlineKeyboardButton("🔙 بازگشت به سریال‌ها", callback_data="port_series")]]
+        caption = "📺 **بهترین تابستان من (۱۳۷۲)**\nکارگردانی سریال طنز دفاع مقدس در ۸ قسمت؛ پرمخاطب‌ترین مجموعه تلویزیونی زمان پخش."
+        try:
+            await query.message.reply_photo(photo="AgACAgQAAxkBAANoarTyji_W7N_W-vV6J45R2IeC2lQAAkIQaxslQqhR6l10W2uK3s0BAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+        except Exception:
+            await query.message.reply_text(caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
+
+    # 2. عشق سال‌های جنگ
+    elif data == "work_eshgh":
+        kb = [[InlineKeyboardButton("🔙 بازگشت به سریال‌ها", callback_data="port_series")]]
+        caption = "📺 **عشق سال‌های جنگ (۱۳۷۹)**\nکارگردانی و تهیه‌کنندگی مشترک در ۱۳ قسمت ۴۵ دقیقه‌ای با موضوع دفاع مقدس."
+        try:
+            await query.message.reply_photo(photo="AgACAgQAAxkBAANparTymmR9Z4TjXz5b6b80lX081UIAAkMQaxslQqhR19Z12K5s02wBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+        except Exception:
+            await query.message.reply_text(caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
+
+    # 3. شب هزار و یکم
+    elif data == "work_shab":
+        kb = [[InlineKeyboardButton("🔙 بازگشت به سریال‌ها", callback_data="port_series")]]
+        caption = "📺 **شب هزار و یکم (۱۳۸۸)**\nکارگردانی سریال ۲۳ قسمتی با موضوع نقش پزشکان در دفاع مقدس، محصول شبکه اول سیما."
+        try:
+            await query.message.reply_photo(photo="AgACAgQAAxkBAANqarTyn5t-q8Xv6j21l5R7lX081UIAAkQQaxslQqhR29Z12K5s02wBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+        except Exception:
+            await query.message.reply_text(caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
+
+    # 4. قدم زدن در بهشت
+    elif data == "work_ghadam":
+        kb = [[InlineKeyboardButton("🔙 بازگشت به سریال‌ها", callback_data="port_series")]]
+        caption = "🎬 **قدم زدن در بهشت (۱۳۹۱)**\nکارگردانی تله‌فیلم با نوگرایی خاص و ساختار سینمایی."
+        try:
+            await query.message.reply_photo(photo="AgACAgQAAxkBAANrarTypM9q5Xv6j21l5R7lX081UIAAkUQaxslQqhR39Z12K5s02wBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+        except Exception:
+            await query.message.reply_text(caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
+
+    # 5. ارثیه پرماجرا و شاهزاده و گدا
+    elif data == "work_ershieh":
+        kb = [[InlineKeyboardButton("🔙 بازگشت به سریال‌ها", callback_data="port_series")]]
+        caption = "🎬 **ارثیه پرماجرا و شاهزاده و گدا (۱۳۹۳)**\nتهیه‌کنندگی فیلم‌های سینمایی-ویدیویی پرمخاطب."
+        try:
+            await query.message.reply_photo(photo="AgACAgQAAxkBAANsarTypw8_zNq6jilkshH7l-IZl_8AAkUQaxslQqhR_zB2Ple2rxMBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+        except Exception:
+            await query.message.reply_text(caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
+
+    # 6. برکت
+    elif data == "work_barakat":
+        kb = [[InlineKeyboardButton("🔙 بازگشت به سریال‌ها", callback_data="port_series")]]
+        caption = "🎬 **برکت (۱۳۹۷)**\nتهیه‌کنندگی و کارگردانی مینی‌سریال تولید شده در بنیاد برکت."
+        try:
+            await query.message.reply_photo(photo="AgACAgQAAxkBAANtarTyqXz9nKqjilkshH7l-IZl_8AAkUQaxslQqhR_zB2Ple2rxMBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+        except Exception:
+            await query.message.reply_text(caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
+
+    # 7. مستند زندگی
+    elif data == "work_zendegi":
+        kb = [[InlineKeyboardButton("🔙 بازگشت به مستندها", callback_data="port_docs")]]
+        caption = "📽️ **مستند «زندگی»**\nکارگردانی مستند درباره محسن محسنی؛ برنده سه جایزه از جشنواره فیلم دفاع مقدس، جشنواره رشد و جشنواره همدان."
+        try:
+            await query.message.reply_photo(photo="AgACAgQAAxkBAANuarTyrV8_zNq6jilkshH7l-IZl_8AAkUQaxslQqhR_zB2Ple2rxMBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+        except Exception:
+            await query.message.reply_text(caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
+
+    # 8. مستندهای برون‌مرزی
+    elif data == "work_nowruz":
+        kb = [[InlineKeyboardButton("🔙 بازگشت به مستندها", callback_data="port_docs")]]
+        caption = "📽️ **مستندهای برون‌مرزی (نوروز در آسیای میانه)**\nتصویربرداری و کارگردانی آیین‌های نوروزی در تاجیکستان، ازبکستان، ترکمنستان و قزاقستان."
+        try:
+            await query.message.reply_photo(photo="AgACAgQAAxkBAANvarTysXz-nKqjilkshH7l-IZl_8AAkUQaxslQqhR_zB2Ple2rxMBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+        except Exception:
+            await query.message.reply_text(caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
+
+    # 9. مستند پاریس ۲۰۱۵
+    elif data == "work_paris":
+        kb = [[InlineKeyboardButton("🔙 بازگشت به مستندها", callback_data="port_docs")]]
+        caption = "📽️ **مستند کنگره جهانی گاز پاریس ۲۰۱۵**\nمستند ۳۰ دقیقه‌ای با حضور مدیرعامل وقت شرکت ملی گاز ایران در پاریس ۲۰۱۵."
+        try:
+            await query.message.reply_photo(photo="AgACAgQAAxkBAANyarTyuYCz-nKqjilkshH7l-IZl_8AAkUQaxslQqhR_zB2Ple2rxMBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+        except Exception:
+            await query.message.reply_text(caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
+
+    # 10. کتاب مرجع گاز
+    elif data == "work_gas_book":
+        kb = [[InlineKeyboardButton("🔙 بازگشت به پروژه‌های گاز", callback_data="port_gas")]]
+        caption = "📚 **کتاب مرجع «گاز؛ انرژی پاک با نیم قرن تلاش»**\n۱۰۱۸ صفحه، تاریخ شفاهی ۵۰ ساله شرکت ملی گاز ایران رونمایی شده در جشن پنجاهمین سالگرد."
+        try:
+            await query.message.reply_photo(photo="AgACAgQAAxkBAANzarTyvYF0-nKqjilkshH7l-IZl_8AAkUQaxslQqhR_zB2Ple2rxMBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+        except Exception:
+            await query.message.reply_text(caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
+
+    # 11. انیمیشن اسرافی و انصافی
+    elif data == "work_esrafi":
+        kb = [[InlineKeyboardButton("🔙 بازگشت به انیمیشن‌ها", callback_data="port_anim")]]
+        caption = "🎨 **انیمیشن آموزشی «اسرافی و انصافی»**\nمجموعه ۳۰ قسمتی انیمیشن طنز با محوریت ایمنی گاز شهری و مشاوره کاراکتر انصافی."
+        try:
+            await query.message.reply_photo(photo="AgACAgQAAxkBAAN0arTywZ0-nKqjilkshH7l-IZl_8AAkUQaxslQqhR_zB2Ple2rxMBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+        except Exception:
+            await query.message.reply_text(caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
+
+    # ================= پایان آثار ۱۲ گانه =================
 
     elif data == "interviews":
         keyboard = [
@@ -441,7 +582,7 @@ async def get_file_id(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message.photo:
         photo_file_id = update.message.photo[-1].file_id
         await update.message.reply_text(
-            f"✅ شناسه این عکس دریافت شد:\n\n`{photo_file_id}`\n\n(این مقدار را کپی کنید تا در بخش آثار قرار دهیم)",
+            f"✅ شناسه این عکس دریافت شد:\n\n`{photo_file_id}`\n\n(این مقدار را کپی کنید)",
             parse_mode="Markdown"
         )
 
@@ -475,12 +616,12 @@ def main():
     application.add_handler(order_handler)
     application.add_handler(admin_msg_handler)
     
-    # اضافه شدن هندلر دریافت عکس برای استخراج File ID
+    # هندلر دریافت عکس برای استخراج شناسه
     application.add_handler(MessageHandler(filters.PHOTO, get_file_id))
     
     application.add_handler(CallbackQueryHandler(button_handler))
 
-    print("Bot is running with photo file_id extractor enabled!")
+    print("Bot is running with all 12 portfolio items and photo support!")
     application.run_polling()
 
 if __name__ == '__main__':
