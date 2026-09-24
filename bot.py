@@ -52,13 +52,13 @@ def run_flask():
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
 
-# منوی اصلی ربات
+# منوی اصلی ربات (به‌روزرسانی شده با دکمه مصاحبه‌ها و رسانه)
 def get_main_menu():
     keyboard = [
         [InlineKeyboardButton("🎬 نمونه کارها و رزومه", callback_data="portfolio"), InlineKeyboardButton("👤 درباره مدیرعامل", callback_data="about")],
         [InlineKeyboardButton("💳 کارت ویزیت دیجیتال", callback_data="digital_card"), InlineKeyboardButton("💬 ارسال پیام به مدیریت", callback_data="contact_admin")],
         [InlineKeyboardButton("📋 خدمات و تعرفه", callback_data="services"), InlineKeyboardButton("📝 ثبت سفارش", callback_data="start_order")],
-        [InlineKeyboardButton("❓ پرسش‌های متداول (FAQ)", callback_data="faq")]
+        [InlineKeyboardButton("📰 مصاحبه‌ها و رسانه", callback_data="interviews"), InlineKeyboardButton("❓ پرسش‌های متداول (FAQ)", callback_data="faq")]
     ]
     return InlineKeyboardMarkup(keyboard)
 
@@ -92,7 +92,7 @@ async def stats_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
     await update.message.reply_text(text, parse_mode="Markdown")
 
-# مدیریت کلیک دکمه‌ها و تفکیک کامل نمونه کارها و رزومه تصویری
+# مدیریت کلیک دکمه‌ها و تفکیک کامل نمونه کارها، رزومه و مصاحبه‌ها
 async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
@@ -130,7 +130,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "*(بازیگران: علی صادقی، علیرضا اسحاقی، سید جواد هاشمی، مهدی صباغی، فاطمه طاهری و...)*\n\n"
             "2️⃣ **عشق سال‌های جنگ (۱۳۷۹):** کارگردانی و تهیه‌کنندگی مشترک در ۱۳ قسمت ۴۵ دقیقه‌ای با موضوع دفاع مقدس (پخش از شبکه سوم سیما).\n"
             "*(بازیگران: فرهاد جم، جعفر دهقان، اندیشه فولادوند، پرستو صالحی و...)*\n\n"
-            "3️⃣ **شب هزار و یکم (۱۳۸۸):** کارگردانی سریال ۲۳ قسمتی با موضوع نقش پزشکان در دفاع مقدس، محصول شبکه اول سیما.\n"
+            "3️⃣ **شب هزار و یکم (۱۳۸۸):** کارگردانی سریال ۲۳ قسمتی با موضوع نقش پزشکان در دفاع مقدس، محصول شبکه اول سیما[cite: 20].\n"
             "*(بازیگران: دانیال حکیمی، علیرضا خمسه، مهشید افشارزاده، یوسف مرادیان، فخرالدین صدیق شریف و...)*\n\n"
             "4️⃣ **قدم زدن در بهشت (۱۳۹۱):** کارگردانی تله‌فیلم با نوگرایی خاص، پخش‌شده از شبکه‌های ۱، ۲، ۳، شبکه نمایش و سیمای همدان.\n\n"
             "5️⃣ **ارثیه پرماجرا (۱۳۹۳) و شاهزاده و گدا (۱۳۹۳):** تهیه‌کنندگی فیلم‌های سینمایی-ویدیویی با موضوع طنز اجتماعی به کارگردانی رسول محمدی.\n\n"
@@ -144,7 +144,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ]
         text = (
             "📽️ **مستندهای تلویزیونی و بین‌المللی:**\n\n"
-            "• **مستند «زندگی»:** کارگردانی مستند درباره محسن محسنی؛ برنده سه جایزه از جشنواره فیلم دفاع مقدس، جشنواره رشد و جشنواره همدان.\n"
+            "• **مستند «زندگی»:** کارگردانی مستند درباره محسن محسنی؛ برنده سه جایزه از جشنواره فیلم دفاع مقدس، جشنواره رشد[cite: 25] و جشنواره همدان.\n"
             "• **مستندهای برون‌مرزی:** مجموعه‌های نوروز در تاجیکستان، نوروز در ازبکستان (برنده دو جایزه بهترین تهیه‌کنندگی و تدوین)، ترکمنستان، قزاقستان، و مجموعه‌های ایران‌شناسان، میهمانی خدا، میرسیدعلی همدانی و...\n"
             "• **مستندهای تلویزیونی داخلی:** مجموعه‌های *قدسیان خاک*، *نخل‌های صبور*، *عطر میعاد* (حج)، *بچه‌های مسجد*، *نسیم کوثر* و..."
         )
@@ -172,6 +172,43 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "• **مجموعه انیمیشن آموزشی «اسرافی و انصافی»:**\n"
             "مجموعه ۳۰ قسمتی انیمیشن طنز و آموزشی (با محوریت مباحث ایمنی گاز شهری و مشاوره کاراکتر «انصافی» به خانواده اسرافی).\n"
             "تهیه‌کننده و کارگردان: علی بهادر، محصول موسسه هنری بهادر فیلم به سفارش شرکت گاز استان تهران (۱۳۹۹-۱۴۰۰)."
+        )
+        await query.message.edit_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
+
+    elif data == "interviews":
+        keyboard = [
+            [InlineKeyboardButton("🖼 مشاهده صفحه روزنامه اطلاعات", callback_data="view_ettelaat")],
+            [InlineKeyboardButton("🖼 مشاهده صفحه هفته‌نامه صدا و سیما", callback_data="view_sedavasima")],
+            [InlineKeyboardButton("🔙 بازگشت به منوی اصلی", callback_data="back_to_menu")]
+        ]
+        text = (
+            "📰 **مصاحبه‌ها و پوشش رسانه‌ای:**\n\n"
+            "1️⃣ **روزنامه اطلاعات (۲۰ مرداد ۱۴۰۵):**\n"
+            "عنوان: «سینمای مستند به مدیرانی جسور نیاز دارد» (گفتگو با نژلا پیکانیان).\n"
+            "بررسی چالش‌های مستندسازی مستقل، مشکلات تولید و نمایش، و مرور ساخت مستند «زندگی».\n\n"
+            "2️⃣ **هفته‌نامه صدا و سیما (مرداد ۱۴۰۵):**\n"
+            "عنوان: «تصویر مقاومت در آیینه رسانه؛ نیم قرن تلاش برای هنر و وطن» (گفتگو با عبدالرحمن شلیبیان).\n"
+            "مرور کارنامه هنری از واحد خبر همدان تا مدیریت گروه حماسه و دفاع و ساخت آثار ماندگار."
+        )
+        await query.message.edit_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
+
+    elif data == "view_ettelaat":
+        keyboard = [[InlineKeyboardButton("🔙 بازگشت به بخش مصاحبه‌ها", callback_data="interviews")]]
+        text = (
+            "📰 **جزئیات مصاحبه با روزنامه اطلاعات (۲۰ مرداد ۱۴۰۵):**\n\n"
+            "• **خبرنگار:** نژلا پیکانیان\n"
+            "• **موضوعات اصلی:** وضعیت سینمای مستند، نیاز به مدیران جسور، چرخه تولید و نمایش، مقایسه با استانداردهای جهانی (دیوید اتنبرو)، خاطره شهید لاریجانی و مستند جانباز محسن محسنی.\n"
+            "🔗 [مشاهده آنلاین در سایت اطلاعات](https://www.ettelaat.com/news/161537/%D8%B3%DB%8C%D9%86%D9%85%D8%A7%DB%8C-%D9%85%D8%B3%D8%AA%D9%86%D8%AF-%D8%A8%D9%-%D9%85%D8%AF%DB%8C%D8%B1%D8%A7%D9%86%DB%8C-%D8%AC%D8%B3%D9%88%D8%B1-%D9%86%DB%8C%D8%A7%D8%B2-%D8%AF%D8%A7%D8%B1%D8%AF)"
+        )
+        await query.message.edit_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
+
+    elif data == "view_sedavasima":
+        keyboard = [[InlineKeyboardButton("🔙 بازگشت به بخش مصاحبه‌ها", callback_data="interviews")]]
+        text = (
+            "📰 **جزئیات مصاحبه با هفته‌نامه صدا و سیما (مرداد ۱۴۰۵):**\n\n"
+            "• **مصاحبه‌کننده:** عبدالرحمن شلیبیان\n"
+            "• **موضوعات اصلی:** نیم قرن تلاش از خبر همدان تا گروه حماسه و دفاع، ساخت آثار خاطره‌انگیز مثل «بهترین تابستان من» و «شب هزار و یکم»، تحلیل جنگ‌های نوین و مقاومت ملی.\n"
+            "🔗 [مشاهده در پایگاه نشریات IRIB](https://iribonline.ir/portal/newsview/125403)"
         )
         await query.message.edit_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
 
@@ -376,7 +413,7 @@ def main():
     application.add_handler(admin_msg_handler)
     application.add_handler(CallbackQueryHandler(button_handler))
 
-    print("Bot is running with admin forward feature!")
+    print("Bot is running with admin forward feature and interviews integrated!")
     application.run_polling()
 
 if __name__ == '__main__':
