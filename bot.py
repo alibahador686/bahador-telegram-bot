@@ -141,8 +141,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "5️⃣ **ارثیه پرماجرا و شاهزاده و گدا (۱۳۹۳):** تهیه‌کنندگی فیلم‌های سینمایی-ویدیویی.\n\n"
             "6️⃣ **برکت (۱۳۹۷):** تهیه‌کنندگی و کارگردانی مینی‌سریال در بنیاد برکت."
         )
-        # در اینجا می‌توانید عکس مربوط به سریال‌ها را با ارسال file_id یا آدرس قرار دهید
-        # await query.message.reply_photo(photo="YOUR_SERIES_PHOTO_ID", caption=text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
         await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
         try:
             await query.message.delete()
@@ -218,7 +216,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "عنوان: «سینمای مستند به مدیرانی جسور نیاز دارد» (گفتگو با نژلا پیکانیان).\n\n"
             "🔗 [مشاهده آنلاین در سایت اطلاعات](https://www.ettelaat.com/news/161537/%D8%B3%DB%8C%D9%86%D9%85%D8%A7%DB%8C-%D9%85%D8%B3%D8%AA%D9%86%D8%AF-%D8%A8%D9%87-%D9%85%D8%AF%DB%8C%D8%B1%D8%A7%D9%86%DB%8C-%D8%AC%D8%B3%D9%88%D8%B1-%D9%86%DB%8C%D8%A7%D8%B2-%D8%AF%D8%A7%D8%B1%D8%AF)"
         )
-        # در اینجا اگر فایلی ارسال کرده‌اید، جایگزین photo کنید (یا از طریق عکس تستی سیستم استفاده کنید)
         try:
             await query.message.reply_photo(
                 photo="https://www.ettelaat.com/files/fa/news/1405/5/20/161537_485.jpg",
@@ -439,6 +436,15 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("عملیات لغو شد.", reply_markup=get_main_menu())
     return ConversationHandler.END
 
+# تابع دریافت خودکار شناسه عکس‌ها (File ID)
+async def get_file_id(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.message.photo:
+        photo_file_id = update.message.photo[-1].file_id
+        await update.message.reply_text(
+            f"✅ شناسه این عکس دریافت شد:\n\n`{photo_file_id}`\n\n(این مقدار را کپی کنید تا در بخش آثار قرار دهیم)",
+            parse_mode="Markdown"
+        )
+
 def main():
     t = Thread(target=run_flask)
     t.daemon = True
@@ -468,9 +474,13 @@ def main():
     application.add_handler(CommandHandler("stats", stats_command))
     application.add_handler(order_handler)
     application.add_handler(admin_msg_handler)
+    
+    # اضافه شدن هندلر دریافت عکس برای استخراج File ID
+    application.add_handler(MessageHandler(filters.PHOTO, get_file_id))
+    
     application.add_handler(CallbackQueryHandler(button_handler))
 
-    print("Bot is running with photo reply methods enabled!")
+    print("Bot is running with photo file_id extractor enabled!")
     application.run_polling()
 
 if __name__ == '__main__':
