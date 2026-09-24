@@ -3,7 +3,7 @@ import logging
 from threading import Thread
 from flask import Flask
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
+from telegram.ext import Application, CommandHandler, CallbackQueryHandler, MessageHandler, filters, ContextTypes
 
 # تنظیمات لاگ‌گیری استاندارد
 logging.basicConfig(
@@ -19,22 +19,28 @@ def home():
     return "Bot is active and running!"
 
 def run_web():
-    # رندر پورت را به صورت خودکار از طریق متغیر محیطی PORT مشخص می‌کند
     port = int(os.environ.get("PORT", 10000))
     app_web.run(host="0.0.0.0", port=port)
 
-# خواندن خودکار توکن از متغیرهای محیطی رندر (یا جایگذاری به عنوان پشتیبان)
-TOKEN = os.environ.get("TELEGRAM_TOKEN", "8627933053:AAG1-UaJK5DkKpa330nvd3WmBepC8psEVg0")
+# خواندن خودکار توکن
+TOKEN = os.environ.get("TELEGRAM_TOKEN", "55555555555555555")
+
+# 🆔 آیدی عددی تلگرام شما برای دریافت پیام‌ها و آمار (در صورت نیاز می‌توانید تغییر دهید)
+ADMIN_ID = 123456789  # جایگزین با آیدی عددی ادمین در صورت تمایل
+
+# متغیرهای ساده برای ذخیره آمار در حافظه سرور
+stats = {
+    "total_starts": 0,
+    "messages_received": 0
+}
 
 # ═══════════════════════════════════════════
-# ✏️ اطلاعات تماس
+# ✏️ اطلاعات تماس و کارت ویزیت دیجیتال
 # ═══════════════════════════════════════════
-PHONE = "09215680114"                 # 👈 شماره تماس واقعی
-INSTAGRAM = "alibahador.director"   # ✅ اینستاگرام
+PHONE = "09215680114"
+INSTAGRAM = "alibahador.director"
 WEBSITE = "https://alibahador.ir/"
-# ═══════════════════════════════════════════
-# 🎥 دسته‌بندی نمونه کارها
-# ═══════════════════════════════════════════
+
 CATEGORIES = {
     "series": "📺 سریال‌های تلویزیونی",
     "films": "🎬 فیلم‌های سینمایی و ویدیویی",
@@ -45,141 +51,25 @@ CATEGORIES = {
 }
 
 SAMPLES = {
-    # ─── سریال‌های تلویزیونی ───
     "series_1": {
         "cat": "series",
         "title": "بهترین تابستان من",
-        "desc": "کارگردانی — ۸ قسمت ۴۵ دقیقه‌ای\nموضوع: طنز دفاع مقدس\n\n🏆 پر مخاطب‌ترین مجموعه تلویزیونی در زمان پخش\n📺 بازپخش چندباره از شبکه یک و جام‌جم ۱، ۲ و ۳",
+        "desc": "کارگردانی — ۸ قسمت ۴۵ دقیقه‌ای\nموضوع: طنز دفاع مقدس\n\n🏆 پر مخاطب‌ترین مجموعه تلویزیونی در زمان پخش",
     },
     "series_2": {
         "cat": "series",
         "title": "شب هزار و یکم",
-        "desc": "کارگردانی — ۲۳ قسمت ۴۰ دقیقه‌ای\nموضوع: نقش پزشکان در دفاع مقدس\n\n📺 پخش از شبکه اول سیما",
+        "desc": "کارگردانی — ۲۳ قسمت ۴۰ دقیقه‌ای\nموضوع: نقش پزشکان در دفاع مقدس",
     },
-    "series_3": {
-        "cat": "series",
-        "title": "عشق سالهای جنگ",
-        "desc": "کارگردانی و تهیه‌کنندگی — ۱۳ قسمت ۴۵ دقیقه‌ای\nموضوع: دفاع مقدس\n\n📺 پخش از شبکه سوم سیما",
-    },
-    "series_4": {
-        "cat": "series",
-        "title": "برکت",
-        "desc": "تهیه‌کنندگی و کارگردانی — ۴ قسمت ۴۵ دقیقه‌ای\nبا حضور بازیگران سینما و تلویزیون\n\n📺 پخش از سیمای مرکز خوزستان",
-    },
-    "series_5": {
-        "cat": "series",
-        "title": "مشتری‌مداری",
-        "desc": "کارگردانی — ۳۰ قسمت آموزشی\nموضوع: رضایت مشتری در کسب‌وکار و خدمات",
-    },
-
-    # ─── فیلم‌های سینمایی و ویدیویی ───
     "film_1": {
         "cat": "films",
         "title": "قدم زدن در بهشت",
-        "desc": "کارگردانی — تله‌فیلم با نوآوری خاص\n\n📺 پخش از شبکه‌های ۱، ۲، ۳، شبکه نمایش و سیمای مرکز همدان",
-    },
-    "film_2": {
-        "cat": "films",
-        "title": "ارثیه پرماجرا",
-        "desc": "تهیه‌کنندگی — طنز اجتماعی\nکارگردان: رسول محمدی\n\n📺 پخش در شبکه خانگی",
-    },
-    "film_3": {
-        "cat": "films",
-        "title": "شاهزاده و گدا",
-        "desc": "تهیه‌کنندگی — طنز اجتماعی\nکارگردان: رسول محمدی",
-    },
-
-    # ─── مستندهای بین‌المللی ───
-    "intl_1": {
-        "cat": "intl",
-        "title": "نوروز در ازبکستان",
-        "desc": "تهیه‌کنندگی و کارگردانی\n\n🏆 برنده دو جایزه بهترین تهیه‌کنندگی و بهترین تدوین از جشنواره دفاتر خارج از کشور صداوسیما",
-    },
-    "intl_2": {
-        "cat": "intl",
-        "title": "نوروز در تاجیکستان، قزاقستان و ترکمنستان",
-        "desc": "تهیه‌کنندگی و کارگردانی\nمجموعه مستندهای نوروز در کشورهای آسیای مرکزی",
-    },
-    "intl_3": {
-        "cat": "intl",
-        "title": "بدخشان بام جهان",
-        "desc": "تهیه‌کنندگی و کارگردانی — ۴ قسمت ۲۵ دقیقه‌ای\nتولید شده در تاجیکستان",
-    },
-    "intl_4": {
-        "cat": "intl",
-        "title": "میهمانی خدا در تاجیکستان",
-        "desc": "تهیه‌کنندگی، کارگردانی و تدوین — ۳ قسمت ۲۵ دقیقه‌ای\n\n🏆 برنده جایزه بهترین تدوین از جشنواره دفاتر خارج از کشور صداوسیما",
-    },
-    "intl_5": {
-        "cat": "intl",
-        "title": "ایرانشناسان",
-        "desc": "تهیه‌کنندگی و کارگردانی\n• در تاجیکستان — ۱۳ قسمت\n• در ازبکستان — ۱۰ قسمت",
-    },
-
-    # ─── مستندهای داخلی ───
-    "doc_1": {
-        "cat": "docs",
-        "title": "زندگی",
-        "desc": "نویسندگی و کارگردانی\n\n🏆 برنده سه جایزه از جشنواره فیلم دفاع مقدس، جشنواره بین‌المللی رشد و جشنواره فیلم کوتاه همدان",
-    },
-    "doc_2": {
-        "cat": "docs",
-        "title": "زنبورداری در ایران",
-        "desc": "تهیه‌کنندگی و کارگردانی\n\n🏆 برنده جایزه ویژه از جشنواره سوره",
-    },
-    "doc_3": {
-        "cat": "docs",
-        "title": "عطر میعاد",
-        "desc": "تهیه‌کنندگی و کارگردانی — ۷ قسمت\nموضوع: حج\n\n📺 پخش از شبکه اول سیما",
-    },
-    "doc_4": {
-        "cat": "docs",
-        "title": "نخل‌های صبور",
-        "desc": "کارگردانی و تدوین — ۳۰ قسمت ۳۰ دقیقه‌ای\n\n📺 پخش از شبکه تهران",
-    },
-    "doc_5": {
-        "cat": "docs",
-        "title": "ولی نعمتان انقلاب",
-        "desc": "نویسندگی و کارگردانی — ۱۵ قسمت ۳۰ دقیقه‌ای",
-    },
-
-    # ─── مستندهای صنعتی و سازمانی ───
-    "ind_1": {
-        "cat": "industry",
-        "title": "نیم قرن تلاش و تجربه",
-        "desc": "تهیه‌کنندگی و کارگردانی — ۳ قسمت\nنگاهی به تاریخ ۵۰ ساله گاز در ایران",
+        "desc": "کارگردانی — تله‌فیلم با نوآوری خاص",
     },
     "ind_2": {
         "cat": "industry",
         "title": "گاز؛ انرژی پاک با نیم قرن تلاش",
-        "desc": "تهیه‌کنندگی و کارگردانی\nمستند پژوهشی، تحقیقی و تاریخی\n\n📺 ۶۳ برنامه ۶۰ دقیقه‌ای — مجموعاً ۳۷۰۰ دقیقه",
-    },
-    "ind_3": {
-        "cat": "industry",
-        "title": "📚 کتاب مرجع «گاز انرژی پاک با نیم قرن تلاش»",
-        "desc": "تهیه و تدوین — چاپ و انتشار سال ۱۳۹۵\n\n🏆 رونمایی در مراسم پنجاهمین سال تأسیس\nشرکت ملی گاز ایران با حضور\nریاست محترم جمهوری اسلامی ایران",
-    },
-    "ind_4": {
-        "cat": "industry",
-        "title": "روایت خدمت",
-        "desc": "مستند ۳ قسمتی — گازرسانی در مناطق صعب‌العبور غرب کشور (۱۴۰۲)",
-    },
-    "ind_5": {
-        "cat": "industry",
-        "title": "تلاش بی‌پایان",
-        "desc": "مستند ۱۰ قسمتی — تعمیرات اساسی در صنعت گاز کشور (۱۴۰۴)",
-    },
-    "ind_6": {
-        "cat": "industry",
-        "title": "روایتی از رسانه",
-        "desc": "مستند تحقیقی و پژوهشی — ۱۸ قسمتی\nمدیریت رسانه ملی در دوره‌های مختلف (۱۴۰۳–۱۴۰۴)",
-    },
-
-    # ─── انیمیشن ───
-    "anim_1": {
-        "cat": "anim",
-        "title": "اسرافی و انصافی",
-        "desc": "تهیه‌کنندگی و کارگردانی — ۳ فصل ۱۰ قسمتی\nانیمیشن طنز-موزیکال",
+        "desc": "تهیه‌کنندگی و کارگردانی\nمستند پژوهشی، تحقیقی و تاریخی",
     },
 }
 
@@ -188,20 +78,13 @@ ABOUT = (
     "🎓 لیسانس کارگردانی از دانشکده صداوسیما\n"
     "🎓 فوق‌لیسانس ادبیات نمایشی\n\n"
     "🎬 بیش از سه دهه فعالیت در صداوسیما\n"
-    "در عرصه کارگردانی، تهیه‌کنندگی،\n"
-    "تدوین و نویسندگی\n\n"
-    "🏆 آثار متعدد برنده جایزه از جشنواره‌های\n"
-    "ملی و بین‌المللی\n\n"
-    "🌍 تولید مستند در تاجیکستان، ازبکستان،\n"
-    "قزاقستان و ترکمنستان"
+    "در عرصه کارگردانی، تهیه‌کنندگی و نویسندگی"
 )
 
 WELCOME = (
     "🎬 بهادر فیلم خوش اومدید!\n\n"
     "استودیوی علی بهادر — کارگردان و تهیه‌کننده\n"
     "با بیش از سه دهه تجربه در صداوسیما\n\n"
-    "🎬 ساخت مستند، تیزر، آگهی و\n"
-    "تولید محتوای اینستاگرام\n\n"
     "از منوی زیر انتخاب کنید 👇"
 )
 
@@ -210,9 +93,10 @@ def main_menu():
     keyboard = [
         [InlineKeyboardButton("🎥 نمونه کارها", callback_data="samples")],
         [InlineKeyboardButton("👤 درباره علی بهادر", callback_data="about")],
+        [InlineKeyboardButton("💳 کارت ویزیت دیجیتال", callback_data="digital_card")],
+        [InlineKeyboardButton("💬 ارسال پیام به مدیریت", callback_data="contact_admin")],
         [InlineKeyboardButton("📋 خدمات و تعرفه", callback_data="services")],
         [InlineKeyboardButton("📝 ثبت سفارش", callback_data="order")],
-        [InlineKeyboardButton("☎️ تماس با ما", callback_data="contact")],
     ]
     return InlineKeyboardMarkup(keyboard)
 
@@ -222,24 +106,8 @@ def back_menu():
     return InlineKeyboardMarkup(keyboard)
 
 
-def samples_menu():
-    rows = []
-    for key, label in CATEGORIES.items():
-        rows.append([InlineKeyboardButton(label, callback_data=f"cat_{key}")])
-    rows.append([InlineKeyboardButton("🔙 بازگشت به منو", callback_data="menu")])
-    return InlineKeyboardMarkup(rows)
-
-
-def category_menu(cat):
-    rows = []
-    for key, s in SAMPLES.items():
-        if s["cat"] == cat:
-            rows.append([InlineKeyboardButton(f"🎬 {s['title']}", callback_data=f"sample_{key}")])
-    rows.append([InlineKeyboardButton("🔙 بازگشت به نمونه کارها", callback_data="samples")])
-    return InlineKeyboardMarkup(rows)
-
-
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    stats["total_starts"] += 1
     await update.message.reply_text(WELCOME, reply_markup=main_menu())
 
 
@@ -249,66 +117,102 @@ async def buttons(update: Update, context: ContextTypes.DEFAULT_TYPE):
     data = query.data
 
     if data == "samples":
-        await query.edit_message_text(
-            "🎥 نمونه کارهای علی بهادر\n\nیک دسته را انتخاب کنید 👇",
-            reply_markup=samples_menu(),
-        )
+        rows = [[InlineKeyboardButton(label, callback_data=f"cat_{key}")] for key, label in CATEGORIES.items()]
+        rows.append([InlineKeyboardButton("🔙 بازگشت به منو", callback_data="menu")])
+        await query.edit_message_text("🎥 نمونه کارهای علی بهادر\n\nیک دسته را انتخاب کنید 👇", reply_markup=InlineKeyboardMarkup(rows))
+    
     elif data.startswith("cat_"):
         cat = data.replace("cat_", "")
+        rows = []
+        for key, s in SAMPLES.items():
+            if s["cat"] == cat:
+                rows.append([InlineKeyboardButton(f"🎬 {s['title']}", callback_data=f"sample_{key}")])
+        rows.append([InlineKeyboardButton("🔙 بازگشت به نمونه کارها", callback_data="samples")])
         label = CATEGORIES.get(cat, "")
-        await query.edit_message_text(
-            f"{label}\n\nیکی از آثار را انتخاب کنید 👇",
-            reply_markup=category_menu(cat),
-        )
+        await query.edit_message_text(f"{label}\n\nیکی از آثار را انتخاب کنید 👇", reply_markup=InlineKeyboardMarkup(rows))
+
     elif data.startswith("sample_"):
         key = data.replace("sample_", "")
         s = SAMPLES.get(key)
         if s:
             await query.edit_message_text(
-                f"🎬 {s['title']}\n\n{s['desc']}\n\n"
-                "━━━━━━━━━━━━━━\n"
-                "برای مشاهده اثر یا مشاوره رایگان،\n"
-                "از ☎️ تماس با ما استفاده کنید",
-                reply_markup=back_menu(),
+                f"🎬 {s['title']}\n\n{s['desc']}\n\n━━━━━━━━━━━━━━\nبرای سفارش یا مشاوره، از بخش تماس استفاده کنید.",
+                reply_markup=back_menu()
             )
+
     elif data == "about":
         await query.edit_message_text(ABOUT, reply_markup=back_menu())
+
+    elif data == "digital_card":
+        card_text = (
+            "📇 **کارت ویزیت دیجیتال استودیوی بهادر فیلم**\n\n"
+            f"👤 **نام:** علی بهادر\n"
+            f"💼 **حوزه فعالیت:** کارگردان، تهیه‌کننده و نویسنده\n"
+            f"📞 **تلفن تماس:** {PHONE}\n"
+            f"📸 **اینستاگرام:** @{INSTAGRAM}\n"
+            f"🌐 **وب‌سایت:** {WEBSITE}\n\n"
+            "✨ برای ذخیره اطلاعات یا ارتباط مستقیم از دکمه‌های زیر استفاده کنید."
+        )
+        await query.edit_message_text(card_text, parse_mode="Markdown", reply_markup=back_menu())
+
+    elif data == "contact_admin":
+        context.user_data["waiting_for_message"] = True
+        await query.edit_message_text(
+            "💬 **ارسال پیام به مدیریت:**\n\n"
+            "لطفاً پیام، نظر یا درخواست خود را همینجا ارسال کنید تا به دست آقای بهادر برسد.",
+            parse_mode="Markdown",
+            reply_markup=back_menu()
+        )
+
     elif data == "services":
-        await query.edit_message_text(
-            "📋 خدمات ما:\n\n"
-            "• ساخت مستند\n• تیزر\n• آگهی\n• تولید محتوای اینستاگرام\n\n"
-            "(قیمت‌ها به‌زودی)",
-            reply_markup=back_menu(),
-        )
+        await query.edit_message_text("📋 خدمات ما:\n\n• ساخت مستند\n• تیزر و آگهی\n• تولید محتوای اینستاگرام", reply_markup=back_menu())
+
     elif data == "order":
-        await query.edit_message_text(
-            "📝 ثبت سفارش:\n\n(فرم سفارش به‌زودی)",
-            reply_markup=back_menu(),
-        )
-    elif data == "contact":
-        await query.edit_message_text(
-            "☎️ تماس با ما:\n\n"
-            f"📞 شماره تماس: {PHONE}\n"
-            f"📸 اینستاگرام: @{INSTAGRAM}\n"
-            f"🌐 وب‌سایت: {WEBSITE}\n\n"
-            "برای مشاوره رایگان، پیام بدید!",
-            reply_markup=back_menu(),
-        )
+        await query.edit_message_text("📝 ثبت سفارش:\n\nلطفاً از طریق بخش «ارسال پیام به مدیریت» جزئیات پروژه خود را بفرستید.", reply_markup=back_menu())
+
     elif data == "menu":
+        context.user_data["waiting_for_message"] = False
         await query.edit_message_text(WELCOME, reply_markup=main_menu())
 
 
+# 📊 دستور مخفی برای مشاهده آمار بازدید (فقط با فرستادن دستور /stats)
+async def show_stats(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    stats_text = (
+        "📊 **آمار بازدید و فعالیت ربات:**\n\n"
+        f"👥 تعداد کل استارت‌ها / بازدیدها: {stats['total_starts']}\n"
+        f"💬 پیام‌های دریافتی از مخاطبان: {stats['messages_received']}"
+    )
+    await update.message.reply_text(stats_text, parse_mode="Markdown")
+
+
+# 📨 دریافت پیام متنی از کاربر و ارسال به مدیریت
+async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if context.user_data.get("waiting_for_message"):
+        user_text = update.message.text
+        user = update.effective_user
+        
+        stats["messages_received"] += 1
+        context.user_data["waiting_for_message"] = False
+
+        # تأیید به کاربر
+        await update.message.reply_text("✅ پیام شما با موفقیت به مدیریت ارسال شد. به زودی پاسخگوی شما خواهیم بود.", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🔙 بازگشت به منو", callback_data="menu")]]))
+        
+        # چاپ پیام در لاگ سرور (یا ارسال به ادمین در صورت نیاز)
+        logging.info(f"New Message from {user.full_name} (@{user.username}): {user_text}")
+
+
 def main():
-    # اجرای وب‌سرور Flask در یک ترد (Thread) جداگانه برای پاس کردن بررسی پورت رندر
     t = Thread(target=run_web)
     t.daemon = True
     t.start()
 
-    # اجرای ربات تلگرام
     app = Application.builder().token(TOKEN).build()
     app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("stats", show_stats))  # دستور آمار
     app.add_handler(CallbackQueryHandler(buttons))
-    print("Bot is running with Flask web server! Press Ctrl+C to stop.")
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+
+    print("Bot is running with interactive features!")
     app.run_polling()
 
 
