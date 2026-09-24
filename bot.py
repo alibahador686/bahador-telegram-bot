@@ -36,7 +36,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "Bahador Film Bot is running live with complete portfolio photo IDs support!"
+    return "Bahador Film Bot is running live with fully integrated and updated features!"
 
 @app.route('/stats')
 def stats():
@@ -52,7 +52,7 @@ def run_flask():
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
 
-# منوی اصلی ربات (شامل لوگو/تصویر شاخص در صورت نیاز یا دکمه‌های جامع)
+# منوی اصلی ربات (کامل شامل دکمه مصاحبه‌ها و رسانه)
 def get_main_menu():
     keyboard = [
         [InlineKeyboardButton("🎬 نمونه کارها و رزومه", callback_data="portfolio"), InlineKeyboardButton("👤 درباره مدیرعامل", callback_data="about")],
@@ -203,7 +203,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception:
             pass
 
-    # ================= نمایش آثار و تصاویر با شناسه‌های ثبت‌شده (File IDs) =================
+    # ================= نمایش آثار و تصاویر با شناسه‌های نهایی و اصلاح‌شده =================
     
     # 1. بهترین تابستان من
     elif data == "work_tabestan":
@@ -218,12 +218,12 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception:
             pass
 
-    # 2. عشق سال‌های جنگ
+    # 2. عشق سال‌های جنگ (با شناسه اصلاح‌شده صحیح)
     elif data == "work_eshgh":
         kb = [[InlineKeyboardButton("🔙 بازگشت به سریال‌ها", callback_data="port_series")]]
         caption = "📺 **عشق سال‌های جنگ**\nکارگردانی و تهیه‌کنندگی سریال با موضوع دفاع مقدس و درام اجتماعی."
         try:
-            await query.message.reply_photo(photo="AgACAgQAAxkBAANearTvmlgwxRnFLGAlGWxU8rkT-1AAAjgQaxslQqhR53FaIRSpKHYBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+            await query.message.reply_photo(photo="AgACAgQAAxkBAAO_arUIpfA0IeK-edzR-SZ0hOoF_pYAAncQaxslQqhRW2I02wABt9X-AQADAgADeQADPQQ", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")[cite: 10]
         except Exception:
             await query.message.reply_text(caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
         try:
@@ -231,12 +231,12 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception:
             pass
 
-    # 3. شب هزار و یکم
+    # 3. شب هزار و یکم (با شناسه اصلاح‌شده صحیح)
     elif data == "work_shab":
         kb = [[InlineKeyboardButton("🔙 بازگشت به سریال‌ها", callback_data="port_series")]]
         caption = "📺 **شب هزار و یکم**\nکارگردانی سریال تلویزیونی با حضور بازیگران برجسته، محصول شبکه اول سیما."
         try:
-            await query.message.reply_photo(photo="AgACAgQAAxkBAANwarTyYMpvBUdAvWgxpNDsokdZzAkAAkQQaxslQqhR0jS6MO2oIdQBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+            await query.message.reply_photo(photo="AgACAgQAAxkBAAPBarUIuUVD4nM87cFP8BgXuq5-U_oAAngQaxslQqhRh6dUdcL50N0BAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
         except Exception:
             await query.message.reply_text(caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
         try:
@@ -244,12 +244,12 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception:
             pass
 
-    # 4. قدم زدن در بهشت
+    # 4. قدم زدن در بهشت (با شناسه اصلاح‌شده صحیح)
     elif data == "work_ghadam":
         kb = [[InlineKeyboardButton("🔙 بازگشت به سریال‌ها", callback_data="port_series")]]
         caption = "🎬 **قدم زدن در بهشت**\nکارگردانی تله‌فیلم با ساختار سینمایی و نوآورانه."
         try:
-            await query.message.reply_photo(photo="AgACAgQAAxkBAANiarTwitFl3GizqfXA940Rm6KoAywAAjsQaxslQqhRLcDSK7px4JIBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+            await query.message.reply_photo(photo="AgACAgQAAxkBAAO9arUIhU6N9Z12yrIgket0xeRDKQUAAnYQaxslQqhRIdr720T2dboBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
         except Exception:
             await query.message.reply_text(caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
         try:
@@ -335,12 +335,12 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception:
             pass
 
-    # 11. مستند زندگی
+    # 11. مستند زندگی (با عکس جدید جایگزین‌شده)
     elif data == "work_zendegi":
         kb = [[InlineKeyboardButton("🔙 بازگشت به مستندها", callback_data="port_docs")]]
         caption = "📽️ **مستند «زندگی»**\nبرنده جوایز متعدد از جشنواره‌های معتبر ملی."
         try:
-            await query.message.reply_photo(photo="AgACAgQAAxkBAANoarTxcvaLVFFDuPSMVCLQ6XXcCEgAAj8QaxslQqhRHyuGPLEPCTYBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+            await query.message.reply_photo(photo="AgACAgQAAxkBAAPgarUK-iIwHxyH6dpdF6lUk7u_mbwAAnoQaxslQqhRW40w4rUt2MsBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
         except Exception:
             await query.message.reply_text(caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
         try:
@@ -348,12 +348,12 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception:
             pass
 
-    # 12. انیمیشن اسرافی و انصافی (یا سایر آثار باقی‌مانده)
+    # 12. انیمیشن اسرافی و انصافی (با پوستر جدید اختصاصی جایگزین‌شده)
     elif data == "work_esrafi":
         kb = [[InlineKeyboardButton("🔙 بازگشت به انیمیشن‌ها", callback_data="port_anim")]]
         caption = "🎨 **انیمیشن آموزشی «اسرافی و انصافی»**\nمجموعه ۳۰ قسمتی طنز با محوریت ایمنی گاز شهری."
         try:
-            await query.message.reply_photo(photo="AgACAgQAAxkBAANgarTwM3C7YugVl34Zx5zmdfqblxEAAjoQaxslQqhRjoQOS53pRBEBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+            await query.message.reply_photo(photo="AgACAgQAAxkBAAOXarT7ccFh9OXiCdDZEU8Ke77rJ3gAAl8QaxslQqhRdziJ4NbzhYQBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
         except Exception:
             await query.message.reply_text(caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
         try:
@@ -361,7 +361,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception:
             pass
 
-    # 13. جوایز و لوح‌های تقدیر (۱۵ الی ۱۸)
+    # 13. جوایز و لوح‌های تقدیر
     elif data == "award_roshd":
         kb = [[InlineKeyboardButton("🔙 بازگشت به جوایز", callback_data="port_awards")]]
         caption = "🏆 **لوح تقدیر جشنواره بین‌المللی فیلم رشد و جشنواره دفاع مقدس**"
@@ -631,7 +631,7 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("عملیات لغو شد.", reply_markup=get_main_menu())
     return ConversationHandler.END
 
-# تابع دریافت خودکار شناسه عکس‌ها (File ID) برای تست‌های بعدی
+# تابع دریافت خودکار شناسه عکس‌ها (File ID)
 async def get_file_id(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message.photo:
         photo_file_id = update.message.photo[-1].file_id
@@ -675,7 +675,7 @@ def main():
     
     application.add_handler(CallbackQueryHandler(button_handler))
 
-    print("Bot is running successfully with all complete portfolio photo IDs!")
+    print("Bot is running successfully with all features, menus, and corrected IDs!")
     application.run_polling()
 
 if __name__ == '__main__':
