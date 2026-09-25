@@ -40,7 +40,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "Bahador Film Bot is running live with two-column layout and fixed stats!"
+    return "Bahador Film Bot is running live with complete resume and two-column layout!"
 
 @app.route('/stats')
 def stats():
@@ -56,7 +56,7 @@ def run_flask():
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
 
-# منوی اصلی دو ستونی (طبق درخواست شما)
+# منوی اصلی دو ستونی
 def get_main_menu():
     keyboard = [
         [InlineKeyboardButton("ثبت سفارش و درخواست مشاوره", callback_data="start_order")],
@@ -85,10 +85,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
     stats_data["total_visits"] += 1
     stats_data["unique_users"].add(user.id)
-    args = context.args
-    if args:
-        source = args[0]
-        logger.info(f"کاربر جدید از منبع ورودی {source} وارد ربات شد. کاربر ID: {user.id}")
     
     welcome_text = (
         "**به مؤسسه هنری بهادر فیلم خوش آمدید**\n\n"
@@ -107,12 +103,12 @@ async def stats_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "**📊 آمار بازدید و تعاملات ربات مؤسسه بهادر فیلم**\n\n"
         f"• کل بازدیدها: {stats_data['total_visits']}\n"
         f"• کاربران یکتا: {len(stats_data['unique_users'])}\n"
-        f"• مشاوره ها و سفارشهای ثبت شده: {stats_data['orders_count']}\n"
-        f"• پیامهای دریافتی مدیریت: {stats_data['messages_count']}"
+        f"• مشاوره‌ها و سفارش‌های ثبت‌شده: {stats_data['orders_count']}\n"
+        f"• پیام‌های دریافتی مدیریت: {stats_data['messages_count']}"
     )
     await update.message.reply_text(text, parse_mode="Markdown")
 
-# --- جریان تعاملی ثبت سفارش و پکیج ها ---
+# --- ثبت سفارش ---
 async def start_order_process(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
@@ -204,7 +200,7 @@ async def receive_user_phone(update: Update, context: ContextTypes.DEFAULT_TYPE)
     await update.message.reply_text(success_text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
     return ConversationHandler.END
 
-# --- هندلر ارسال پیام مستقیم به مدیریت ---
+# --- ارتباط با مدیریت ---
 async def contact_admin_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
@@ -290,7 +286,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton("بازگشت به منوی اصلی", callback_data="back_to_menu")]
         ]
         text = (
-            "☑ **پکیج های پیشنهادی خدمات:**\n\n"
+            "☑ **پکیج‌های پیشنهادی خدمات:**\n\n"
             "• **پکیج پایه:** مناسب کسب‌وکارها، تولید تیزر معرفی کوتاه، کیفیت استاندارد مناسب شبکه‌های اجتماعی.\n"
             "• **پکیج حرفه‌ای (پیشنهاد ویژه):** ساخت مستند سازمانی یا تیزر کامل، فیلم‌برداری تخصصی، اصلاح رنگ و صداگذاری حرفه‌ای.\n"
             "• **پکیج ویژه (فاخر):** تولید سریال مستندهای بلند تلویزیونی یا پروژه‌های بزرگ سازمانی از صفر تا صد.\n\n"
@@ -381,13 +377,13 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton("بازگشت به نمونه کارها", callback_data="portfolio")]
         ]
         text = (
-            "**فهرست سریال‌های تلویزیونی و سینمایی:**\n\n"
-            "۱. سریال «بهترین تابستان من» (۱۳۷۲)\n"
-            "۲. سریال «عشق سال‌های جنگ» (۱۳۷۹)\n"
-            "۳. سریال «شب هزار و یکم» (۱۳۸۸)\n"
-            "۴. تله‌فیلم «قدم زدن در بهشت» (۱۳۹۱)\n"
-            "۵. فیلم «ارثیه پرماجرا» و «شاهزاده و گدا» (۱۳۹۳)\n"
-            "۶. مینی‌سریال «برکت» (۱۳۹۷) و سریال «مشتری‌مداری» (۱۴۰۰)\n\n"
+            "**فهرست کامل سریال‌های تلویزیونی و سینمایی:**\n\n"
+            "۱. سریال «بهترین تابستان من» (۱۳۷۲) - کارگردانی سریال طنز خاطره‌انگیز دفاع مقدس در ۸ قسمت.\n"
+            "۲. سریال «عشق سال‌های جنگ» (۱۳۷۹) - کارگردانی و تهیه‌کنندگی مشترک مجموعه درام تلویزیونی.\n"
+            "۳. سریال «شب هزار و یکم» (۱۳۸۸) - کارگردانی سریال پرمخاطب ۲۳ قسمتی شبکه اول سیما.\n"
+            "۴. تله‌فیلم «قدم زدن در بهشت» (۱۳۹۱) - کارگردانی فیلم تلویزیونی با ساختار و استانداردهای سینمایی.\n"
+            "۵. فیلم‌های سینمایی ویدیویی «ارثیه پرماجرا» و «شاهزاده و گدا» (۱۳۹۳) - تهیه‌کنندگی پروژه‌های طنز و اجتماعی.\n"
+            "۶. مینی‌سریال «برکت» (۱۳۹۷) و سریال آموزشی «مشتری‌مداری» (۱۴۰۰) - تهیه‌کنندگی و کارگردانی آثار مهارتی.\n\n"
             "برای مشاهده جزئیات و تصاویر هر اثر روی دکمه مربوطه کلیک کنید:"
         )
         await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
@@ -403,7 +399,13 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton("مجموعه مستند روایتی از رسانه", callback_data="work_resaneh")],
             [InlineKeyboardButton("بازگشت به نمونه کارها", callback_data="portfolio")]
         ]
-        text = "**بخش مستندها و مستند داستانی:**\n\nلطفاً بخش مورد نظر را انتخاب کنید:"
+        text = (
+            "**بخش کامل مستندها و مستند داستانی:**\n\n"
+            "• مستند «زندگی» درباره محسن محسنی (برنده جوایز جشنواره‌های بین‌المللی رشد، دفاع مقدس و همدان).\n"
+            "• مستندهای برون‌مرزی نوروز در آسیای میانه و کشورهای منطقه.\n"
+            "• مجموعه مستند «روایتی از رسانه» (۱۴۰۳ - ۱۴۰۴) در خصوص تحلیل ساختار مدیریت رسانه ملی.\n\n"
+            "لطفاً بخش مورد نظر را انتخاب کنید:"
+        )
         await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
         try:
             await query.message.delete()
@@ -415,7 +417,12 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton("کتاب مرجع گاز؛ انرژی پاک...", callback_data="work_gas_book")],
             [InlineKeyboardButton("بازگشت به نمونه کارها", callback_data="portfolio")]
         ]
-        text = "**پروژه‌های ملی نفت و گاز و کتاب مرجع (۱۰۱۸ صفحه)**\n\nبرای مشاهده تصویر کتاب کلیک کنید:"
+        text = (
+            "**پروژه‌های ملی نفت و گاز و کتاب مرجع:**\n\n"
+            "• هم‌نویسنده و ویرایشگر کتاب مرجع و ۱۰۱۸ صفحه‌ای «گاز؛ انرژی پاک با نیم قرن تلاش» (منتشر شده در سال ۲۰۱۵ مصادف با پنجاهمین سالگرد شرکت ملی گاز ایران).\n"
+            "• تولید مستندها و بسته‌های رسانه‌ای صنعت نفت و گاز.\n\n"
+            "برای مشاهده تصویر کتاب کلیک کنید:"
+        )
         await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
         try:
             await query.message.delete()
@@ -427,7 +434,11 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton("انیمیشن اسرافی و انصافی", callback_data="work_esrafi")],
             [InlineKeyboardButton("بازگشت به نمونه کارها", callback_data="portfolio")]
         ]
-        text = "**انیمیشن‌های آموزشی و طنز (اسرافی و انصافی)**\n\nبرای مشاهده پوستر کلیک کنید:"
+        text = (
+            "**انیمیشن‌های آموزشی و طنز:**\n\n"
+            "• مجموعه انیمیشن‌های آموزشی «اسرافی و انصافی» با محوریت فرهنگ‌سازی ایمنی مصرف گاز شهری، اصلاح الگوی مصرف و آموزش نکات ایمنی به زبان طنز.\n\n"
+            "برای مشاهده پوستر کلیک کنید:"
+        )
         await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
         try:
             await query.message.delete()
@@ -447,7 +458,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception:
             pass
             
-    # نمایش عکس‌ها با پشتیبانی متن جایگزین در صورت بروز خطا
+    # نمایش عکس‌ها با پشتیبانی کامل متن جایگزین
     elif data == "work_tabestan":
         kb = [[InlineKeyboardButton("بازگشت به سریال‌ها", callback_data="port_series")]]
         caption = "**(۱۳۷۲) بهترین تابستان من**\nکارگردانی سریال طنز دفاع مقدس در ۸ قسمت."
@@ -679,7 +690,8 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         keyboard = [[InlineKeyboardButton("بازگشت به منوی اصلی", callback_data="back_to_menu")]]
         about_text = (
             "☑ **درباره مدیرعامل:**\n\n"
-            "علی بهادر، کارگردان، تهیه‌کننده و نویسنده با بیش از چهار دهه سابقه فعالیت در صداوسیما، فارغ‌التحصیل کارشناسی کارگردانی و کارشناسی ارشد ادبیات نمایشی."
+            "علی بهادر، کارگردان، تهیه‌کننده و نویسنده با بیش از چهار دهه سابقه فعالیت در صداوسیما، فارغ‌التحصیل کارشناسی کارگردانی و کارشناسی ارشد ادبیات نمایشی، "
+            "مدیر سابق گروه حماسه و دفاع شبکه یک سیما، مدیریت واحد دوبلاژ و شروع فعالیت حرفه‌ای از سال ۱۳۶۰ در واحد خبر همدان."
         )
         await query.message.reply_text(about_text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
         try:
@@ -725,7 +737,7 @@ def main():
         states={
             ADMIN_MESSAGE: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_admin_message)]
         },
-        fallbacks=[CallbackCodeHandler if 'CallbackCodeHandler' in globals() else CallbackQueryHandler(button_handler, pattern="^back_to_menu$")]
+        fallbacks=[CallbackQueryHandler(button_handler, pattern="^back_to_menu$")]
     )
     
     application.add_handler(order_conv_handler)
@@ -736,7 +748,7 @@ def main():
     flask_thread.daemon = True
     flask_thread.start()
     
-    logger.info("Bot is running with two-column layout, active stats command, and gift message up to 1405...")
+    logger.info("Bot is running with full complete resume, two-column layout, and active stats...")
     application.run_polling()
 
 if __name__ == '__main__':
