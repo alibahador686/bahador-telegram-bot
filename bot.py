@@ -14,7 +14,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-TOKEN = os.environ.get("TELEGRAM_TOKEN", "8627933053:AAG1-UaJK5DkKpa330nvd3WmBepC8psEVg0")
+TOKEN = os.environ.get("TELEGRAM_TOKEN", "8627933053:AAGcXtBIP2PRWkDCKTfc53vvIPOn2XQtpEU")
 ADMIN_CHAT_ID = 198728977
 
 stats_data = {
@@ -150,7 +150,7 @@ async def receive_user_name(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [[InlineKeyboardButton("🔙 انصراف و بازگشت", callback_data="back_to_menu")]]
     text = (
         f"متشکرم **{user_name} عزیز**.\n\n"
-        "لطفاً **شماره تماس** خود (مثلاً 0912...) را ارسال کنید تا کارشناسان ما با شما تماس بگیرند:"
+        "لطفاً **شماره تماس** خود (مثلاً 0921...) را ارسال کنید تا کارشناسان ما با شما تماس بگیرند:"
     )
     await update.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
     return USER_PHONE
@@ -182,10 +182,12 @@ async def receive_user_phone(update: Update, context: ContextTypes.DEFAULT_TYPE)
         logger.error(f"Error sending order to admin: {e}")
         
     success_text = (
-        "✅ **پیام شما ثبت شد. در اسرع وقت با شما تماس گرفته خواهد شد.**\n"
+        "✅ **سفارش شما با موفقیت ثبت شد.**\n"
+        "⏳ در اسرع وقت با شما تماس گرفته خواهد شد.\n"
         "⏰ ساعات پاسخگویی: ۹ صبح تا ساعت ۲۰\n\n"
-        f"🎁 **یادآوری هدیه ویژه:** یک کلیپ ۱ دقیقه‌ای رایگان به سفارش شما تعلق خواهد گرفت.\n"
-        f"🔖 **کد پیگیری سفارش:** `{tracking_code}`\n\n"
+        f"🎁 **هدیه ویژه:** یک کلیپ ۱ دقیقه‌ای رایگان به سفارش شما تعلق خواهد گرفت.\n"
+        f"🔖 **کد پیگیری سفارش شما:** `{tracking_code}`\n\n"
+        "💡 *یادآوری ملایم:* در صورت تمایل به ارسال پیام یا سوال بیشتر، می‌توانید از منوی اصلی اقدام کنید.\n\n"
         "از اعتماد شما سپاسگزاریم. 🌹"
     )
     keyboard = [[InlineKeyboardButton("🔙 بازگشت به منوی اصلی", callback_data="back_to_menu")]]
@@ -197,10 +199,11 @@ async def contact_admin_start(update: Update, context: ContextTypes.DEFAULT_TYPE
     query = update.callback_query
     await query.answer()
     
-    keyboard = [[InlineKeyboardButton("🔙 بازگشت به منوی اصلی", callback_data="back_to_menu")]]
+    keyboard = [[InlineKeyboardButton("🔙 انصراف و بازگشت", callback_data="back_to_menu")]]
     text = (
         "💬 **ارسال پیام مستقیم به مدیریت:**\n\n"
-        "لطفاً پیام، نظر یا درخواست خود را همینجا ارسال کنید تا در اسرع وقت به دست مدیریت برسد و کد پیگیری دریافت کنید."
+        "لطفاً پیام، نظر یا درخواست خود را همینجا ارسال کنید تا در اسرع وقت به دست مدیریت برسد و کد پیگیری دریافت کنید.\n\n"
+        "💡 *یادآوری ملایم:* در صورتی که تمایل به ثبت سفارش قطعی دارید، می‌توانید از بخش «ثبت سفارش» نیز استفاده کنید."
     )
     await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
     try:
@@ -232,9 +235,10 @@ async def receive_admin_message(update: Update, context: ContextTypes.DEFAULT_TY
         logger.error(f"Error sending message to admin chat: {e}")
 
     success_response = (
-        "✅ **پیام شما ثبت شد. در اسرع وقت با شما تماس گرفته خواهد شد.**\n"
+        "✅ **پیام شما با موفقیت ثبت شد و به مدیریت ارسال گردید.**\n"
+        "⏳ در اسرع وقت پاسخ داده خواهد شد.\n"
         "⏰ ساعات پاسخگویی: ۹ صبح تا ساعت ۲۰\n\n"
-        f"🔖 **کد پیگیری شما:** `{tracking_code}`\n"
+        f"🔖 **کد پیگیری شما:** `{tracking_code}`\n\n"
         "از حسن توجه و ارتباط شما سپاسگزاریم. 🌹"
     )
     keyboard = [[InlineKeyboardButton("🔙 بازگشت به منوی اصلی", callback_data="back_to_menu")]]
@@ -295,7 +299,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception:
             pass
 
-    # --- هدیه رایگان (فایل راهنما) شامل هدیه کلیپ ۱ دقیقه‌ای ---
     elif data == "lead_magnet":
         keyboard = [
             [InlineKeyboardButton("🌐 وب‌سایت رسمی", url="https://alibahador.ir")],
@@ -318,8 +321,8 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "• تعیین نوع محتوا (مستند، تیزر داستانی، موشن‌گرافیک، گزارش عملکرد و...)\n\n"
             "🎁 **هدیه ویژه همراه با فایل:** در صورت ثبت سفارش هر پروژه، یک کلیپ ۱ دقیقه‌ای رایگان به سفارش‌دهنده تحویل خواهد شد.\n\n"
             "📌 **گام چهارم: هماهنگی با تیم تولید و مشاوره**\n"
-            "راه‌های ارتباطی با واحد مشاوره و ثبت سفارش از طریق ربات تلگرام، وب‌سایت رسمی (alibahador.ir) و تماس مستقیم با شماره `+989121711063`.\n\n"
-            "⏰ ساعات پاسخگویی واحد مشاوره: شنبه تا چهارشنبه، ساعت ۹ الی ۱۷."
+            "راه‌های ارتباطی با واحد مشاوره و ثبت سفارش از طریق ربات تلگرام، وب‌سایت رسمی (alibahador.ir) و تماس مستقیم با شماره `+989215680114`.\n\n"
+            "⏰ ساعات پاسخگویی واحد مشاوره: شنبه تا چهارشنبه، ساعت ۹ الی ۲۰."
         )
         await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown", disable_web_page_preview=True)
         try:
@@ -333,6 +336,26 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "🔔 **خبرنامه آموزشی و هنری بهادر فیلم**\n\n"
             "با عضویت در این خبرنامه، ماهی ۱ الی ۲ بار نکات ارزشمند تولید فیلم، پشت‌صحنه‌ها و اخبار کارهای جدید مستقیماً برای شما ارسال می‌شود.\n\n"
             "شما با موفقیت در لیست مخاطبان ویژه قرار گرفتید! ✅"
+        )
+        await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
+
+    elif data == "faq":
+        keyboard = [
+            [InlineKeyboardButton("💬 ثبت سفارش و مشاوره", callback_data="start_order")],
+            [InlineKeyboardButton("🔙 بازگشت به منوی اصلی", callback_data="back_to_menu")]
+        ]
+        text = (
+            "❓ **پرسش‌های متداول (FAQ):**\n\n"
+            "۱. **چگونه می‌توانم سفارش خود را ثبت کنم؟**\n"
+            "از طریق دکمه «ثبت سفارش و درخواست مشاوره» در منوی اصلی، پکیج مورد نظر خود را انتخاب کرده و اطلاعات تماس خود را وارد کنید.\n\n"
+            "۲. **آیا امکان دریافت مشاوره رایگان وجود دارد؟**\n"
+            "بله، کارشناسان ما از ساعت ۹ صبح تا ۲۰ آماده پاسخگویی به سوالات شما هستند.\n\n"
+            "۳. **هدیه ویژه سفارش‌ها چیست؟**\n"
+            "در صورت ثبت سفارش هر پروژه، یک کلیپ ۱ دقیقه‌ای رایگان به شما تحویل داده خواهد شد."
         )
         await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
         try:
@@ -551,7 +574,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         kb = [[InlineKeyboardButton("🔙 بازگشت به سریال‌ها", callback_data="port_series")]]
         caption = "🎬 **برکت (۱۳۹۷)**\nتهیه‌کنندگی و کارگردانی مینی‌سریال ۴ قسمتی."
         try:
-            await query.message.reply_photo(photo="AgACAgQAAxkBAANuarTyOwkGmkfs6tcNodNBGzujgCwAAkMQaxslQqhRRxnzoph9E4EBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_node="Markdown")
+            await query.message.reply_photo(photo="AgACAgQAAxkBAANuarTyOwkGmkfs6tcNodNBGzujgCwAAkMQaxslQqhRRxnzoph9E4EBAAMCAAN5AAM9BA", caption=caption, parse_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
         except Exception:
             await query.message.reply_text(caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
         try:
@@ -583,7 +606,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception:
             pass
 
-    # --- اصلاح شده دقیق: نمایش مستند «روایتی از رسانه» به صورت متنی (بدون عکس اشتباه کتاب گاز) ---
     elif data == "work_resaneh":
         kb = [[InlineKeyboardButton("🔙 بازگشت به مستندها", callback_data="port_docs")]]
         text = (
@@ -720,7 +742,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         text = (
             "💳 **کارت ویزیت دیجیتال مؤسسه بهادر فیلم:**\n\n"
             "مدیرعامل: علی بهادر\n"
-            "شماره تماس مستقیم: `+989121711063`\n"
+            "شماره تماس مستقیم: `+989215680114`\n"
             "وب‌سایت: alibahador.ir"
         )
         await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
@@ -735,7 +757,6 @@ def main():
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("stats", stats_command))
     
-    # کانورسیشن هندلر ثبت سفارش و پکیج‌ها (با الگوهای دقیق pkg_)
     order_conv_handler = ConversationHandler(
         entry_points=[CallbackQueryHandler(start_order_process, pattern="^start_order$")],
         states={
@@ -746,7 +767,6 @@ def main():
         fallbacks=[CallbackQueryHandler(button_handler, pattern="^back_to_menu$")]
     )
     
-    # کانورسیشن هندلر ارسال پیام مستقیم به مدیریت
     contact_admin_handler = ConversationHandler(
         entry_points=[CallbackQueryHandler(contact_admin_start, pattern="^contact_admin$")],
         states={
