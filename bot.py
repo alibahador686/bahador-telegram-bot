@@ -29,7 +29,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "Bahador Film Bot is running live with complete CV and portfolio photo IDs!"
+    return "Bahador Film Bot is running live with complete CV, portfolio photo IDs and new marketing features!"
 
 @app.route('/stats')
 def stats():
@@ -45,25 +45,35 @@ def run_flask():
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
 
+# منوی اصلی بهینه‌شده با دسترسی سریع به درخواست مشاوره، هدیه رایگان و پکیج‌ها در بالاترین سطح
 def get_main_menu():
     keyboard = [
-        [InlineKeyboardButton("🎬 نمونه کارها و رزومه کامل", callback_data="portfolio"), InlineKeyboardButton("👤 درباره مدیرعامل", callback_data="about")],
+        [InlineKeyboardButton("💬 درخواست مشاوره رایگان", callback_data="start_order"), InlineKeyboardButton("🎁 هدیه رایگان (چک‌لیست)", callback_data="lead_magnet")],
+        [InlineKeyboardButton("🎬 نمونه کارها و رزومه کامل", callback_data="portfolio"), InlineKeyboardButton("⚙️ فرآیند کار ما", callback_data="workflow")],
+        [InlineKeyboardButton("📦 پکیج‌های خدمات", callback_data="packages"), InlineKeyboardButton("👤 درباره مدیرعامل", callback_data="about")],
         [InlineKeyboardButton("💳 کارت ویزیت دیجیتال", callback_data="digital_card"), InlineKeyboardButton("💬 ارسال پیام به مدیریت", callback_data="contact_admin")],
-        [InlineKeyboardButton("📋 خدمات و تعرفه", callback_data="services"), InlineKeyboardButton("📝 ثبت سفارش", callback_data="start_order")],
-        [InlineKeyboardButton("📰 مصاحبه‌ها و رسانه", callback_data="interviews"), InlineKeyboardButton("❓ پرسش‌های متداول (FAQ)", callback_data="faq")]
+        [InlineKeyboardButton("📰 مصاحبه‌ها و رسانه", callback_data="interviews"), InlineKeyboardButton("🔔 خبرنامه آموزشی", callback_data="newsletter_join")],
+        [InlineKeyboardButton("❓ پرسش‌های متداول (FAQ)", callback_data="faq")]
     ]
     return InlineKeyboardMarkup(keyboard)
 
+# دستور استارت کوتاه و حرفه‌ای با قابلیت رهگیری منابع ورود (UTM Tracking)
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
     stats_data["total_visits"] += 1
     stats_data["unique_users"].add(user.id)
     
+    # ردیابی منابع ورود (مثلا ?start=story یا ?start=bio)
+    args = context.args
+    if args:
+        source = args[0]
+        logger.info(f"کاربر جدید از منبع ورودی '{source}' وارد ربات شد. کاربر ID: {user.id}")
+
     welcome_text = (
         "🎬 **به مؤسسه هنری بهادر فیلم خوش آمدید!**\n\n"
-        "مدیریت: علی بهادر – کارگردان، تهیه‌کننده و نویسنده (دارای کارشناسی ارشد ادبیات نمایشی و لیسانس کارگردانی از دانشکده صداوسیما با بیش از چهار دهه تجربه حرفه‌ای)\n\n"
-        "🎬 ساخت سریال، مستندهای فاخر تلویزیونی، تیزر، آگهی و انیمیشن\n\n"
-        "👇 از منوی زیر انتخاب کنید:"
+        "سازنده سریال، مستندهای فاخر تلویزیونی، تیزر و انیمیشن.\n"
+        "مدیریت: علی بهادر (کارگردان و تهیه‌کننده)\n\n"
+        "👇 چه پروژه‌ای در ذهن دارید؟ از منوی زیر انتخاب کنید:"
     )
     
     if update.callback_query:
@@ -77,7 +87,7 @@ async def stats_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f"📊 **آمار ربات مؤسسه هنری بهادر فیلم:**\n\n"
         f"🔹 کل بازدیدها: {stats_data['total_visits']}\n"
         f"🔹 کاربران یکتا: {len(stats_data['unique_users'])}\n"
-        f"🔹 سفارش‌های ثبت شده: {stats_data['orders_count']}\n"
+        f"🔹 مشاوره‌ها/سفارش‌های ثبت شده: {stats_data['orders_count']}\n"
         f"🔹 پیام‌های دریافتی مدیریت: {stats_data['messages_count']}"
     )
     await update.message.reply_text(text, parse_mode="Markdown")
@@ -93,6 +103,81 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=get_main_menu(),
             parse_mode="Markdown"
         )
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
+
+    # --- بخش جدید: فرآیند ۴ مرحله‌ای کار ---
+    elif data == "workflow":
+        keyboard = [
+            [InlineKeyboardButton("💬 درخواست مشاوره رایگان", callback_data="start_order")],
+            [InlineKeyboardButton("🔙 بازگشت به منوی اصلی", callback_data="back_to_menu")]
+        ]
+        text = (
+            "⚙️ **فرآیند تولید پروژه در مؤسسه بهادر فیلم (۴ مرحله شفاف):**\n\n"
+            "۱️⃣ **مشاوره اولیه:** بررسی ایده، نیازسنجی، تعیین اهداف و مخاطب اثر.\n"
+            "۲️⃣ **پیش‌تولید:** نگارش فیلم‌نامه، استوری‌برد، انتخاب عوامل، لوکیشن و برنامه‌ریزی.\n"
+            "۳️⃣ **تولید:** تصویربرداری حرفه‌ای با تجهیزات مدرن و کادر مجرب.\n"
+            "۴️⃣ **تحویل و پس‌تولید:** تدوین دقیق با پریمیر، اصلاح رنگ، صداگذاری و تحویل باکیفیت.\n\n"
+            "با این مسیر شفاف، با خیال راحت به پروژه خود جان ببخشید."
+        )
+        await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
+
+    # --- بخش جدید: پکیج‌های خدمات به‌جای تعرفه خام ---
+    elif data == "packages":
+        keyboard = [
+            [InlineKeyboardButton("💬 انتخاب پکیج و درخواست مشاوره", callback_data="start_order")],
+            [InlineKeyboardButton("🔙 بازگشت به منوی اصلی", callback_data="back_to_menu")]
+        ]
+        text = (
+            "📦 **پکیج‌های پیشنهادی خدمات:**\n\n"
+            "🔹 **پکیج پایه (مناسب کسب‌وکارها):** تولید تیزر معرفی کوتاه، کیفیت استاندارد، مناسب شبکه‌های اجتماعی.\n"
+            "🔸 **پکیج حرفه‌ای (پیشنهاد ویژه ⭐):** ساخت مستند سازمانی یا تیزر کامل، فیلم‌برداری تخصصی، اصلاح رنگ و صداگذاری حرفه‌ای.\n"
+            "🔹 **پکیج ویژه (فاخر):** تولید سریال، مستندهای بلند تلویزیونی یا پروژه‌های بزرگ سازمانی از صفر تا صد.\n\n"
+            "کدام پکیج مد نظر شماست؟ برای شروع کافی است درخواست مشاوره ثبت کنید."
+        )
+        await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
+
+    # --- بخش جدید: هدیه رایگان (Lead Magnet) ---
+    elif data == "lead_magnet":
+        keyboard = [
+            [InlineKeyboardButton("💬 درخواست مشاوره رایگان", callback_data="start_order")],
+            [InlineKeyboardButton("🔙 بازگشت به منوی اصلی", callback_data="back_to_menu")]
+        ]
+        text = (
+            "🎁 **هدیه رایگان شما:**\n"
+            "«چک‌لیست طلایی آماده‌سازی و سفارش فیلم و تیزر سازمانی»\n\n"
+            "این چک‌لیست به شما کمک می‌کند پیش از شروع هر پروژه تولیدی، هزینه‌ها، اهداف و پیام خود را بهینه‌سازی کنید.\n\n"
+            "📄 برای مشاهده و دانلود فایل راهنما، به وب‌سایت رسمی ما مراجعه کنید:\n"
+            "🌐 alibahador.ir\n\n"
+            "⏰ ساعات پاسخگویی واحد مشاوره: شنبه تا چهارشنبه ۹ الی ۱۷."
+        )
+        await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown", disable_web_page_preview=True)
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
+
+    # --- بخش جدید: خبرنامه آموزشی ماهانه ---
+    elif data == "newsletter_join":
+        keyboard = [
+            [InlineKeyboardButton("🔙 بازگشت به منوی اصلی", callback_data="back_to_menu")]
+        ]
+        text = (
+            "🔔 **خبرنامه آموزشی و هنری بهادر فیلم**\n\n"
+            "با عضویت در این خبرنامه، ماهی ۱ الی ۲ بار نکات ارزشمند تولید فیلم، پشت‌صحنه‌ها و اخبار کارهای جدید مستقیماً برای شما ارسال می‌شود (بدون تبلیغات آزاردهنده).\n\n"
+            "شما با موفقیت در لیست مخاطبان ویژه قرار گرفتید! ✅"
+        )
+        await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
         try:
             await query.message.delete()
         except Exception:
@@ -247,7 +332,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         kb = [[InlineKeyboardButton("🔙 بازگشت به سریال‌ها", callback_data="port_series")]]
         caption = "📺 **عشق سال‌های جنگ (۱۳۷۹)**\nکارگردانی و تهیه‌کنندگی مشترک در ۱۳ قسمت ۴۵ دقیقه‌ای با موضوع دفاع مقدس."
         try:
-            # استفاده از شناسه جدید و تاییدشده‌ی عکس ارسالی کاربر
             await query.message.reply_photo(photo="AgACAgQAAxkBAAIBXGq1RFFgqvcgd_P55t87XY74WlPkAALSEGsbJUKoUZfj1JAQyVznAQADAgADeQADPQQ", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
         except Exception:
             await query.message.reply_text(caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
@@ -517,7 +601,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         keyboard = [[InlineKeyboardButton("🔙 بازگشت به منوی اصلی", callback_data="back_to_menu")]]
         await query.message.reply_text(
             "❓ **پرسش‌های متداول (FAQ):**\n\n"
-            "• **چگونه پروژه ثبت کنیم؟** از طریق دکمه «ثبت سفارش» در منوی اصلی.\n"
+            "• **چگونه درخواست مشاوره ثبت کنیم؟** از طریق دکمه «درخواست مشاوره رایگان» در منوی اصلی.\n"
             "• **چگونه با مدیریت ارتباط بگیریم؟** از طریق دکمه «ارسال پیام به مدیریت».",
             reply_markup=InlineKeyboardMarkup(keyboard),
             parse_mode="Markdown"
@@ -527,7 +611,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception:
             pass
 
-# ثبت سفارش مرحله به مرحله
+# --- جریان مکالمه ثبت سفارش / درخواست مشاوره با مقاومت روانی پایین‌تر ---
 async def start_order(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
@@ -540,7 +624,7 @@ async def start_order(update: Update, context: ContextTypes.DEFAULT_TYPE):
         [InlineKeyboardButton("❌ انصراف", callback_data="back_to_menu")]
     ]
     await query.message.reply_text(
-        "📝 **ثبت سفارش جدید - مرحله ۱ از ۳:**\n\nلطفاً نوع پروژه مورد نظر خود را انتخاب کنید:",
+        "💬 **فرم درخواست مشاوره رایگان (مرحله ۱ از ۳):**\n\nلطفاً نوع پروژه مورد نظر خود را انتخاب کنید:",
         reply_markup=InlineKeyboardMarkup(keyboard),
         parse_mode="Markdown"
     )
@@ -577,7 +661,7 @@ async def receive_project_type(update: Update, context: ContextTypes.DEFAULT_TYP
 async def receive_user_name(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data['user_name'] = update.message.text
     await update.message.reply_text(
-        "📞 **مرحله ۳ از ۳:**\n\nلطفاً **شماره تماس** خود را ارسال کنید تا همکاران ما با شما تماس بگیرند:"
+        "📞 **مرحله ۳ از ۳:**\n\nلطفاً **شماره تماس** خود را ارسال کنید تا همکاران ما در ساعات اداری (۹ الی ۱۷) با شما تماس بگیرند:"
     )
     return USER_PHONE
 
@@ -590,38 +674,46 @@ async def receive_user_phone(update: Update, context: ContextTypes.DEFAULT_TYPE)
     u_phone = context.user_data.get('user_phone')
     
     summary = (
-        "✅ **سفارش شما با موفقیت ثبت شد!**\n\n"
+        "✅ **درخواست مشاوره شما با موفقیت ثبت شد!**\n\n"
         f"▫️ نوع پروژه: {p_type}\n"
         f"▫️ نام: {u_name}\n"
         f"▫️ شماره تماس: {u_phone}\n\n"
         "کارشناسان مؤسسه هنری بهادر فیلم به زودی با شما تماس خواهند گرفت."
     )
     
-    admin_order_notification = (
-        "🔔 **سفارش جدید ثبت شد!**\n\n"
-        f"▫️ نوع پروژه: {p_type}\n"
-        f"▫️ نام کاربر: {u_name}\n"
-        f"▫️ شماره تماس: {u_phone}\n"
-        f"▫️ آیدی تلگرام: @{update.effective_user.username if update.effective_user.username else 'ندارد'} (ID: {update.effective_user.id})"
-    )
+    await update.message.reply_text(summary, parse_mode="Markdown")
+    
+    # ارسال اطلاع‌رسانی فوری به ادمین
     try:
-        await context.bot.send_message(chat_id=ADMIN_CHAT_ID, text=admin_order_notification, parse_mode="Markdown")
+        admin_notification = (
+            f"🔔 **درخواست مشاوره جدید ثبت شد!**\n\n"
+            f"👤 نام: {u_name}\n"
+            f"📞 تلفن: {u_phone}\n"
+            f"🎬 پروژه: {p_type}\n"
+            f"🆔 شناسه کاربر: {update.effective_user.id}"
+        )
+        await context.bot.send_message(chat_id=ADMIN_CHAT_ID, text=admin_notification, parse_mode="Markdown")
     except Exception as e:
-        logger.error(f"Failed to send order notification to admin: {e}")
+        logger.error(f"خطا در ارسال پیام به ادمین: {e}")
 
+    # بازگشت به منوی اصلی پس از ثبت
     keyboard = [[InlineKeyboardButton("🔙 بازگشت به منوی اصلی", callback_data="back_to_menu")]]
-    await update.message.reply_text(summary, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
+    await update.message.reply_text("برای بازگشت به منوی اصلی روی دکمه زیر کلیک کنید:", reply_markup=InlineKeyboardMarkup(keyboard))
     return ConversationHandler.END
 
-# ارسال پیام به مدیریت
+async def cancel_order(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("عملیات لغو شد.")
+    return ConversationHandler.END
+
+# مدیریت پیام مستقیم به مدیریت
 async def contact_admin_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
-    
     keyboard = [[InlineKeyboardButton("❌ انصراف", callback_data="back_to_menu")]]
     await query.message.reply_text(
-        "💬 **ارسال پیام به مدیریت:**\n\nلطفاً پیام، نظر یا درخواست خود را بنویسید تا برای مدیریت ارسال شود:",
-        reply_markup=InlineKeyboardMarkup(keyboard)
+        "💬 **ارسال پیام مستقیم به مدیریت:**\n\nلطفاً پیام، نظر یا پیشنهاد خود را بفرستید:",
+        reply_markup=InlineKeyboardMarkup(keyboard),
+        parse_mode="Markdown"
     )
     try:
         await query.message.delete()
@@ -630,76 +722,63 @@ async def contact_admin_start(update: Update, context: ContextTypes.DEFAULT_TYPE
     return ADMIN_MESSAGE
 
 async def receive_admin_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    stats_data["messages_count"] += 1
     user_msg = update.message.text
     user = update.effective_user
-    
+    stats_data["messages_count"] += 1
+
     forward_text = (
-        "💬 **پیام جدید از مخاطب ربات:**\n\n"
-        f"👤 فرستنده: {user.full_name}\n"
-        f"🔗 نام کاربری: @{user.username if user.username else 'ندارد'} (ID: {user.id})\n\n"
-        f"📝 متن پیام:\n{user_msg}"
+        f"📩 **پیام جدید از مخاطب ربات:**\n\n"
+        f"👤 نام: {user.full_name} (@{user.username if user.username else 'ندارد'})\n"
+        f"🆔 شناسه: {user.id}\n\n"
+        f"متن پیام:\n{user_msg}"
     )
-    
     try:
         await context.bot.send_message(chat_id=ADMIN_CHAT_ID, text=forward_text, parse_mode="Markdown")
+        await update.message.reply_text("✅ پیام شما با موفقیت به مدیریت ارسال شد. به زودی بررسی خواهد شد.")
     except Exception as e:
-        logger.error(f"Failed to forward message to admin: {e}")
+        logger.error(f"خطا در ارسال پیام ادمین: {e}")
+        await update.message.reply_text("❌ متأسفانه در ارسال پیام خطایی رخ داد. لطفاً بعداً تلاش کنید.")
     
     keyboard = [[InlineKeyboardButton("🔙 بازگشت به منوی اصلی", callback_data="back_to_menu")]]
-    await update.message.reply_text(
-        "✅ پیام شما با موفقیت به مدیریت مؤسسه هنری بهادر فیلم ارسال شد.",
-        reply_markup=InlineKeyboardMarkup(keyboard)
-    )
+    await update.message.reply_text("از ارتباط شما سپاسگزاریم.", reply_markup=InlineKeyboardMarkup(keyboard))
     return ConversationHandler.END
-
-async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("عملیات لغو شد.", reply_markup=get_main_menu())
-    return ConversationHandler.END
-
-async def get_file_id(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if update.message.photo:
-        photo_file_id = update.message.photo[-1].file_id
-        await update.message.reply_text(
-            f"✅ شناسه این عکس دریافت شد:\n\n`{photo_file_id}`\n\n(این مقدار را کپی کنید)",
-            parse_mode="Markdown"
-        )
 
 def main():
-    t = Thread(target=run_flask)
-    t.daemon = True
-    t.start()
+    app_builder = ApplicationBuilder().token(TOKEN).build()
 
-    application = ApplicationBuilder().token(TOKEN).build()
-
+    # هندلر گفتگو برای ثبت سفارش / مشاوره
     order_handler = ConversationHandler(
         entry_points=[CallbackQueryHandler(start_order, pattern="^start_order$")],
         states={
-            PROJECT_TYPE: [CallbackQueryHandler(receive_project_type)],
+            PROJECT_TYPE: [CallbackQueryHandler(receive_project_type, pattern="^p_")],
             USER_NAME: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_user_name)],
-            USER_PHONE: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_user_phone)]
+            USER_PHONE: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_user_phone)],
         },
-        fallbacks=[CommandHandler('cancel', cancel)]
+        fallbacks=[CommandHandler("cancel", cancel_order)]
     )
 
+    # هندلر گفتگو برای ارسال پیام به ادمین
     admin_msg_handler = ConversationHandler(
         entry_points=[CallbackQueryHandler(contact_admin_start, pattern="^contact_admin$")],
         states={
-            ADMIN_MESSAGE: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_admin_message)]
+            ADMIN_MESSAGE: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_admin_message)],
         },
-        fallbacks=[CommandHandler('cancel', cancel)]
+        fallbacks=[CommandHandler("cancel", cancel_order)]
     )
 
-    application.add_handler(CommandHandler("start", start))
-    application.add_handler(CommandHandler("stats", stats_command))
-    application.add_handler(order_handler)
-    application.add_handler(admin_msg_handler)
-    
-    application.add_handler(MessageHandler(filters.PHOTO, get_file_id))
-    application.add_handler(CallbackQueryHandler(button_handler))
+    app_builder.add_handler(CommandHandler("start", start))
+    app_builder.add_handler(CommandHandler("stats", stats_command))
+    app_builder.add_handler(order_handler)
+    app_builder.add_handler(admin_msg_handler)
+    app_builder.add_handler(CallbackQueryHandler(button_handler))
 
-    print("Bot is running successfully with complete CV and portfolio photo IDs!")
-    application.run_polling()
+    # اجرای سرور Flask در یک ترد جداگانه برای رندر / هاستینگ
+    flask_thread = Thread(target=run_flask)
+    flask_thread.daemon = True
+    flask_thread.start()
+
+    logger.info("ربات بهادر فیلم با موفقیت اجرا شد و آماده به‌کار است...")
+    app_builder.run_polling()
 
 if __name__ == '__main__':
     main()
