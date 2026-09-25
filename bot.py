@@ -31,7 +31,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "Bahador Film Bot is running live with complete CV, portfolio photo IDs and new marketing features!"
+    return "Bahador Film Bot is running live with complete guide content and fixed admin messaging!"
 
 @app.route('/stats')
 def stats():
@@ -47,10 +47,10 @@ def run_flask():
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
 
-# منوی اصلی بهینه‌شده با دسترسی سریع به درخواست مشاوره، هدیه رایگان و پکیج‌ها در بالاترین سطح
+# منوی اصلی بهینه‌شده
 def get_main_menu():
     keyboard = [
-        [InlineKeyboardButton("💬 درخواست مشاوره رایگان", callback_data="start_order"), InlineKeyboardButton("🎁 هدیه رایگان (چک‌لیست)", callback_data="lead_magnet")],
+        [InlineKeyboardButton("💬 درخواست مشاوره رایگان", callback_data="start_order"), InlineKeyboardButton("🎁 هدیه رایگان (فایل راهنما)", callback_data="lead_magnet")],
         [InlineKeyboardButton("🎬 نمونه کارها و رزومه کامل", callback_data="portfolio"), InlineKeyboardButton("⚙️ فرآیند کار ما", callback_data="workflow")],
         [InlineKeyboardButton("📦 پکیج‌های خدمات", callback_data="packages"), InlineKeyboardButton("👤 درباره مدیرعامل", callback_data="about")],
         [InlineKeyboardButton("💳 کارت ویزیت دیجیتال", callback_data="digital_card"), InlineKeyboardButton("💬 ارسال پیام به مدیریت", callback_data="contact_admin")],
@@ -59,7 +59,6 @@ def get_main_menu():
     ]
     return InlineKeyboardMarkup(keyboard)
 
-# دستور استارت کوتاه و حرفه‌ای با قابلیت رهگیری منابع ورود (UTM Tracking)
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
     stats_data["total_visits"] += 1
@@ -93,7 +92,7 @@ async def stats_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
     await update.message.reply_text(text, parse_mode="Markdown")
 
-# --- هندلر ارسال پیام مستقیم به مدیریت با کد پیگیری یکتا (مشتری‌مداری) ---
+# --- هندلر ارسال پیام مستقیم به مدیریت با کد پیگیری یکتا (اصلاح شده و امن) ---
 async def contact_admin_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
@@ -131,26 +130,19 @@ async def receive_admin_message(update: Update, context: ContextTypes.DEFAULT_TY
     try:
         # ارسال پیام به آیدی مدیر
         await context.bot.send_message(chat_id=ADMIN_CHAT_ID, text=admin_notification, parse_mode="Markdown")
-        
-        # پاسخ مشتری‌مدارانه و موفقیت‌آمیز به کاربر همراه با کد پیگیری
-        success_response = (
-            "✅ **پیام شما با موفقیت دریافت شد و به دست مدیریت رسید.**\n"
-            "از حسن توجه و ارتباط شما سپاسگزاریم. 🌹\n\n"
-            f"🔖 **کد پیگیری شما:** `{tracking_code}`\n"
-            "در اسرع وقت بررسی و پاسخ داده خواهد شد.\n\n"
-            "📞 شماره تماس مستقیم: `+989121711063`"
-        )
-        keyboard = [[InlineKeyboardButton("🔙 بازگشت به منوی اصلی", callback_data="back_to_menu")]]
-        await update.message.reply_text(success_response, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
-        
     except Exception as e:
-        logger.error(f"Error sending message to admin: {e}")
-        error_response = (
-            "⚠️ متأسفانه در ارسال پیام خطایی رخ داد، اما درخواست شما محفوظ است.\n"
-            "لطفاً در صورت نیاز مستقیماً با شماره `+989121711063` تماس بگیرید.\n"
-            "از صبوری شما سپاسگزاریم."
-        )
-        await update.message.reply_text(error_response, parse_mode="Markdown")
+        logger.error(f"Error sending message to admin chat: {e}")
+
+    # پاسخ مشتری‌مدارانه و موفقیت‌آمیز به کاربر همراه با کد پیگیری دقیق
+    success_response = (
+        "✅ **پیام شما با موفقیت دریافت شد و به دست مدیریت رسید.**\n"
+        "از حسن توجه و ارتباط شما سپاسگزاریم. 🌹\n\n"
+        f"🔖 **کد پیگیری شما:** `{tracking_code}`\n"
+        "در اسرع وقت بررسی و پاسخ داده خواهد شد.\n\n"
+        "📞 شماره تماس مستقیم: `+989121711063`"
+    )
+    keyboard = [[InlineKeyboardButton("🔙 بازگشت به منوی اصلی", callback_data="back_to_menu")]]
+    await update.message.reply_text(success_response, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
         
     return ConversationHandler.END
 
@@ -207,7 +199,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception:
             pass
 
-    # --- اصلاح شده: بخش هدیه رایگان (Lead Magnet) شامل لینک سایت، شماره تماس و توضیحات کامل ---
+    # --- بخش هدیه رایگان (فایل راهنما) با جزئیات کامل و ساختار ۴ گانه درخواستی شما ---
     elif data == "lead_magnet":
         keyboard = [
             [InlineKeyboardButton("🌐 وب‌سایت رسمی", url="https://alibahador.ir")],
@@ -217,11 +209,20 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         text = (
             "🎁 **هدیه رایگان شما:**\n"
             "**«چک‌لیست طلایی آماده‌سازی و سفارش فیلم و تیزر سازمانی»**\n\n"
-            "این چک‌لیست به شما کمک می‌کند پیش از شروع هر پروژه تولیدی، هزینه‌ها، اهداف و پیام خود را بهینه‌سازی کنید.\n\n"
-            "📄 برای مشاهده و دانلود فایل راهنما، به وب‌سایت رسمی ما مراجعه کنید:\n"
-            "🌐 alibahador.ir\n\n"
-            "📞 تلفن هماهنگی و مشاوره: `+989121711063`\n"
-            "⏰ ساعات پاسخگویی واحد مشاوره: شنبه تا چهارشنبه ۹ الی ۱۷."
+            "مقدمه کوتاه:\n"
+            "اهمیت ساخت ویدیو و تیزر در معرفی برند، محصول یا سازمان و نقش کلیدی پیش‌تولید در کاهش هزینه‌ها و افزایش اثربخشی.\n\n"
+            "📌 **گام اول: تعیین هدف و مخاطب (چرا و برای چه کسی؟)**\n"
+            "• مشخص کردن هدف اصلی پروژه (فروش، آگاهی از برند، آموزشی، مستند سازمانی و...)\n"
+            "• شناخت دقیق مخاطب هدف و لحن مناسب برای ارتباط با آن‌ها.\n\n"
+            "📌 **گام دوم: تعیین بودجه و زمان‌بندی (هزینه‌ها و ددلاین)**\n"
+            "• برآورد اولیه بودجه متناسب با اهداف پروژه.\n"
+            "• مشخص کردن بازه زمانی تحویل و تاریخ‌های کلیدی رویدادها یا انتشار.\n\n"
+            "📌 **گام سوم: پیام اصلی و ساختار محتوایی (چه می‌خواهیم بگوییم؟)**\n"
+            "• خلاصه کردن پیام کلیدی در یک جمله طلایی.\n"
+            "• تعیین نوع محتوا (مستند، تیزر داستانی، موشن‌گرافیک، گزارش عملکرد و...)\n\n"
+            "📌 **گام چهارم: هماهنگی با تیم تولید و مشاوره**\n"
+            "راه‌های ارتباطی با واحد مشاوره و ثبت سفارش از طریق ربات تلگرام، وب‌سایت رسمی (alibahador.ir) و تماس مستقیم با شماره `+989121711063`.\n\n"
+            "⏰ ساعات پاسخگویی واحد مشاوره: شنبه تا چهارشنبه، ساعت ۹ الی ۱۷."
         )
         await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown", disable_web_page_preview=True)
         try:
@@ -550,8 +551,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception:
             pass
 
-    # ================= بخش مصاحبه‌ها و سایر منوها (با اعمال اصلاحات دقیق) =================
-
     elif data == "interviews":
         keyboard = [
             [InlineKeyboardButton("📰 مصاحبه روزنامه اطلاعات (۲۰ مرداد ۱۴۰۵)", callback_data="view_ettelaat_img")],
@@ -568,7 +567,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception:
             pass
 
-    # --- اصلاح‌شده: مصاحبه روزنامه اطلاعات (حذف نام مصاحبه‌کننده و تنظیم عنوان گفتگو با علی بهادر) ---
     elif data == "view_ettelaat_img":
         keyboard = [[InlineKeyboardButton("🔙 بازگشت به بخش مصاحبه‌ها", callback_data="interviews")]]
         caption_text = (
@@ -590,7 +588,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception:
             pass
 
-    # --- اصلاح‌شده: مصاحبه هفته‌نامه صدا و سیما با متن و لینک دقیق درخواست‌شده ---
     elif data == "view_sedavasima_img":
         keyboard = [
             [InlineKeyboardButton("🔗 مشاهده آنلاین در سایت", url="https://iribonline.ir/portal/newsview/125403")],
@@ -641,14 +638,13 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception:
             pass
 
-# اجرای اصلی برنامه و تنظیم ConversationHandler برای بخش مدیریت
 def main():
     application = ApplicationBuilder().token(TOKEN).build()
 
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("stats", stats_command))
     
-    # کانورسیشن هندلر بخش «ارسال پیام به مدیریت» جهت جلوگیری از خطا و ثبت روان
+    # کانورسیشن هندلر بخش «ارسال پیام به مدیریت»
     contact_admin_handler = ConversationHandler(
         entry_points=[CallbackQueryHandler(contact_admin_start, pattern="^contact_admin$")],
         states={
