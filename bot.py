@@ -32,7 +32,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "Bahador Film Bot is running live with complete detailed portfolio and all final corrections!"
+    return "Bahador Film Bot is running live with fully fixed interactive workflow and portfolio!"
 
 @app.route('/stats')
 def stats():
@@ -85,10 +85,10 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def stats_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = (
-        f"📊 **آمار ربات مؤسسه هنری بهادر فیلم:**\n\n"
+        f"📊 **آمار بازدید و تعاملات ربات مؤسسه بهادر فیلم:**\n\n"
         f"🔹 کل بازدیدها: {stats_data['total_visits']}\n"
         f"🔹 کاربران یکتا: {len(stats_data['unique_users'])}\n"
-        f"🔹 مشاوره‌ها/سفارش‌های ثبت شده: {stats_data['orders_count']}\n"
+        f"🔹 مشاوره‌ها و سفارش‌های ثبت‌شده: {stats_data['orders_count']}\n"
         f"🔹 پیام‌های دریافتی مدیریت: {stats_data['messages_count']}"
     )
     await update.message.reply_text(text, parse_mode="Markdown")
@@ -108,7 +108,7 @@ async def start_order_process(update: Update, context: ContextTypes.DEFAULT_TYPE
     text = (
         "📦 **انتخاب پکیج خدمات و ثبت سفارش:**\n\n"
         "🎁 **هدیه ویژه:** در صورت سفارش هر پروژه، یک کلیپ ۱ دقیقه‌ای رایگان به سفارش‌دهنده تحویل خواهد شد.\n\n"
-        "لطفاً پکیج یا نوع درخواست خود را انتخاب کنید:"
+        "لطفاً پکیج یا نوع درخواست خود را از میان گزینه‌های زیر انتخاب کنید:"
     )
     await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
     try:
@@ -152,7 +152,7 @@ async def receive_user_name(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f"متشکرم **{user_name} عزیز**.\n\n"
         "لطفاً **شماره تماس** خود (مثلاً 0912...) را ارسال کنید تا کارشناسان ما با شما تماس بگیرند:"
     )
-    await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
+    await update.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
     return USER_PHONE
 
 async def receive_user_phone(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -295,7 +295,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception:
             pass
 
-    # --- هدیه رایگان (فایل راهنما) با جزئیات کامل ---
+    # --- هدیه رایگان (فایل راهنما) شامل هدیه کلیپ ۱ دقیقه‌ای ---
     elif data == "lead_magnet":
         keyboard = [
             [InlineKeyboardButton("🌐 وب‌سایت رسمی", url="https://alibahador.ir")],
@@ -316,6 +316,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "📌 **گام سوم: پیام اصلی و ساختار محتوایی (چه می‌خواهیم بگوییم؟)**\n"
             "• خلاصه کردن پیام کلیدی در یک جمله طلایی.\n"
             "• تعیین نوع محتوا (مستند، تیزر داستانی، موشن‌گرافیک، گزارش عملکرد و...)\n\n"
+            "🎁 **هدیه ویژه همراه با فایل:** در صورت ثبت سفارش هر پروژه، یک کلیپ ۱ دقیقه‌ای رایگان به سفارش‌دهنده تحویل خواهد شد.\n\n"
             "📌 **گام چهارم: هماهنگی با تیم تولید و مشاوره**\n"
             "راه‌های ارتباطی با واحد مشاوره و ثبت سفارش از طریق ربات تلگرام، وب‌سایت رسمی (alibahador.ir) و تماس مستقیم با شماره `+989121711063`.\n\n"
             "⏰ ساعات پاسخگویی واحد مشاوره: شنبه تا چهارشنبه، ساعت ۹ الی ۱۷."
@@ -550,7 +551,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         kb = [[InlineKeyboardButton("🔙 بازگشت به سریال‌ها", callback_data="port_series")]]
         caption = "🎬 **برکت (۱۳۹۷)**\nتهیه‌کنندگی و کارگردانی مینی‌سریال ۴ قسمتی."
         try:
-            await query.message.reply_photo(photo="AgACAgQAAxkBAANuarTyOwkGmkfs6tcNodNBGzujgCwAAkMQaxslQqhRRxnzoph9E4EBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+            await query.message.reply_photo(photo="AgACAgQAAxkBAANuarTyOwkGmkfs6tcNodNBGzujgCwAAkMQaxslQqhRRxnzoph9E4EBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_node="Markdown")
         except Exception:
             await query.message.reply_text(caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
         try:
@@ -582,13 +583,14 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception:
             pass
 
+    # --- اصلاح شده دقیق: نمایش مستند «روایتی از رسانه» به صورت متنی (بدون عکس اشتباه کتاب گاز) ---
     elif data == "work_resaneh":
         kb = [[InlineKeyboardButton("🔙 بازگشت به مستندها", callback_data="port_docs")]]
-        caption = "📽️ **مجموعه مستند «روایتی از رسانه» (۱۴۰۳-۱۴۰۴)**\nبررسی ویژگی‌های مدیریت رسانه در دوران آقایان محمد هاشمی، شهید علی لاریجانی و عزت‌الله ضرغامی."
-        try:
-            await query.message.reply_photo(photo="AgACAgQAAxkBAANsarTx9X_9z_IFk7DvWGmtVGkGB0AAAkIQaxslQqhRUjAa4c-6XLwBAAMCAAN5AAM9BA", caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
-        except Exception:
-            await query.message.reply_text(caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+        text = (
+            "📽️ **مجموعه مستند «روایتی از رسانه» (۱۴۰۳-۱۴۰۴):**\n\n"
+            "• مجموعه مستند تحقیقی-پژوهشی ۱۸ قسمتی پیرامون بررسی ویژگی‌های مدیریت رسانه در دوران آقایان محمد هاشمی، شهید علی لاریجانی و عزت‌الله ضرغامی."
+        )
+        await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
         try:
             await query.message.delete()
         except Exception:
@@ -658,7 +660,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception:
             pass
 
-    # --- مصاحبه روزنامه اطلاعات (اصلاح شده بدون نام مصاحبه‌کننده) ---
     elif data == "view_ettelaat_img":
         keyboard = [[InlineKeyboardButton("🔙 بازگشت به بخش مصاحبه‌ها", callback_data="interviews")]]
         caption_text = (
@@ -680,7 +681,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception:
             pass
 
-    # --- مصاحبه هفته‌نامه صدا و سیما (اصلاح شده با متن و لینک دقیق) ---
     elif data == "view_sedavasima_img":
         keyboard = [
             [InlineKeyboardButton("🔗 مشاهده آنلاین در سایت", url="https://iribonline.ir/portal/newsview/125403")],
@@ -698,7 +698,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception:
             pass
 
-    # --- بخش درباره مدیرعامل با متن دقیق درخواستی شما ---
     elif data == "about":
         keyboard = [[InlineKeyboardButton("🔙 بازگشت به منوی اصلی", callback_data="back_to_menu")]]
         about_text = (
@@ -736,7 +735,7 @@ def main():
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("stats", stats_command))
     
-    # کانورسیشن هندلر ثبت سفارش و پکیج‌ها
+    # کانورسیشن هندلر ثبت سفارش و پکیج‌ها (با الگوهای دقیق pkg_)
     order_conv_handler = ConversationHandler(
         entry_points=[CallbackQueryHandler(start_order_process, pattern="^start_order$")],
         states={
@@ -764,7 +763,7 @@ def main():
     flask_thread.daemon = True
     flask_thread.start()
 
-    logger.info("Bot is starting polling with fully verified corrections, detailed portfolio, and custom about text...")
+    logger.info("Bot is starting polling with fully verified workflows, stats, and bug fixes...")
     application.run_polling()
 
 if __name__ == '__main__':
