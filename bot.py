@@ -32,7 +32,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "Bahador Film Bot is running live with complete detailed portfolio and fixed features!"
+    return "Bahador Film Bot is running live with complete detailed portfolio and all final corrections!"
 
 @app.route('/stats')
 def stats():
@@ -295,6 +295,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception:
             pass
 
+    # --- هدیه رایگان (فایل راهنما) با جزئیات کامل ---
     elif data == "lead_magnet":
         keyboard = [
             [InlineKeyboardButton("🌐 وب‌سایت رسمی", url="https://alibahador.ir")],
@@ -657,12 +658,13 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception:
             pass
 
+    # --- مصاحبه روزنامه اطلاعات (اصلاح شده بدون نام مصاحبه‌کننده) ---
     elif data == "view_ettelaat_img":
         keyboard = [[InlineKeyboardButton("🔙 بازگشت به بخش مصاحبه‌ها", callback_data="interviews")]]
         caption_text = (
             "📰 **مصاحبه با روزنامه اطلاعات (۲۰ مرداد ۱۴۰۵):**\n"
             "عنوان: «سینمای مستند به مدیرانی جسور نیاز دارد» (گفتگو با علی بهادر)\n\n"
-            "🔗 [مشاهده آنلاین در سایت اطلاعات](https://www.ettelaat.com/news/161537/%D8%B3%DB%8C%D9%86%D9%85%D8%A7%DB%8C-%D9%85%D8%B3%D8%AA%D9%86%D8%AF-%D8%A8%D9%87-%D9%85%D8%dB8%D8%B1%D8%A7%D9%86%DB%8C-%D8%AC%D8%B3%D9%88%D8%B1-%D9%86%DB%8C%D8%A7%D8%B2-%D8%AF%D8%A7%D8%B1%D8%AF)"
+            "🔗 [مشاهده آنلاین در سایت اطلاعات](https://www.ettelaat.com/news/161537/%D8%B3%DB%8C%D9%86%D9%85%D8%A7%DB%8C-%D9%85%D8%B3%D8%AA%D9%86%D8%AF-%D8%A8%D9%87-%D9%85%D8%AF%DB%8C%D8%B1%D8%A7%D9%86%DB%8C-%D8%AC%D8%B3%D9%88%D8%B1-%D9%86%DB%8C%D8%A7%D8%B2-%D8%AF%D8%A7%D8%B1%D8%AF)"
         )
         try:
             await query.message.reply_photo(
@@ -678,6 +680,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception:
             pass
 
+    # --- مصاحبه هفته‌نامه صدا و سیما (اصلاح شده با متن و لینک دقیق) ---
     elif data == "view_sedavasima_img":
         keyboard = [
             [InlineKeyboardButton("🔗 مشاهده آنلاین در سایت", url="https://iribonline.ir/portal/newsview/125403")],
@@ -695,16 +698,15 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception:
             pass
 
+    # --- بخش درباره مدیرعامل با متن دقیق درخواستی شما ---
     elif data == "about":
         keyboard = [[InlineKeyboardButton("🔙 بازگشت به منوی اصلی", callback_data="back_to_menu")]]
-        await query.message.reply_text(
-            "👤 **درباره علی بهادر و مؤسسه هنری بهادر فیلم:**\n\n"
-            "• **تحصیلات:** کارشناسی ارشد ادبیات نمایشی و لیسانس کارگردانی از دانشکده صداوسیما.\n"
-            "• **سوابق اجرایی:** مدیر گروه حماسه و دفاع شبکه یک سیما، سرپرست واحد دوبلاژ شبکه یک، شروع فعالیت حرفه‌ای از زمستان ۱۳۶۰ در واحد خبر همدان به مدت ۶ سال پیش از ورود به دانشکده صداوسیما.\n"
-            "• **مدیرعامل:** مؤسسه هنری و سینمایی بهادر فیلم.",
-            reply_markup=InlineKeyboardMarkup(keyboard),
-            parse_mode="Markdown"
+        about_text = (
+            "👤 **درباره مدیرعامل:**\n\n"
+            "علی بهادر، کارگردان، تهیه‌کننده و نویسنده با بیش از چهار دهه سابقه فعالیت در صدا و سیما و فارغ‌التحصیل کارشناسی کارگردانی از دانشکده صدا و سیما و کارشناسی ارشد ادبیات نمایشی. "
+            "در طول این سال‌ها در حوزه‌های سریال‌سازی، تله‌فیلم، مستند و پروژه‌های فرهنگی و صنعتی، هم در داخل کشور و هم در چند کشور منطقه، فعالیت کرده است."
         )
+        await query.message.reply_text(about_text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
         try:
             await query.message.delete()
         except Exception:
@@ -762,7 +764,7 @@ def main():
     flask_thread.daemon = True
     flask_thread.start()
 
-    logger.info("Bot is starting polling with full detailed portfolio & order workflow...")
+    logger.info("Bot is starting polling with fully verified corrections, detailed portfolio, and custom about text...")
     application.run_polling()
 
 if __name__ == '__main__':
