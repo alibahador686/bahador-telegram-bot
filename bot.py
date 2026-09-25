@@ -14,7 +14,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-TOKEN = os.environ.get("TELEGRAM_TOKEN", "8627933053:AAGcXtBIP2PRWkDCKTfc53vvIPOn2XQtpEU")
+TOKEN = os.environ.get("TELEGRAM_TOKEN", "8627933053:AAGhQyyblUP237We1QRMMwTBY7IW45SK79Y")
 ADMIN_CHAT_ID = 198728977
 
 stats_data = {
