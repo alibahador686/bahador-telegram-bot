@@ -32,7 +32,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "Bahador Film Bot is running live with complete guide content and fixed admin messaging!"
+    return "Bahador Film Bot is running live with complete detailed portfolio and fixed features!"
 
 @app.route('/stats')
 def stats():
@@ -48,7 +48,7 @@ def run_flask():
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
 
-# منوی اصلی بهینه‌شده (شامل دکمه ثبت سفارش و مشاوره در صدر منو)
+# منوی اصلی کامل و جامع
 def get_main_menu():
     keyboard = [
         [InlineKeyboardButton("💬 ثبت سفارش و درخواست مشاوره", callback_data="start_order")],
@@ -357,19 +357,26 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     elif data == "port_series":
         keyboard = [
-            [InlineKeyboardButton("📺 سریال‌ها و آثار نمایشی", callback_data="port_series")],
+            [InlineKeyboardButton("💬 ثبت سفارش ساخت سریال/فیلم", callback_data="start_order")],
             [InlineKeyboardButton("🔙 بازگشت به نمونه کارها", callback_data="portfolio")]
         ]
         text = (
-            "📺 **فهرست سریال‌ها و فیلم‌های داستانی:**\n\n"
-            "۱- ارثیه پرماجرا (۱۳۹۳)\n"
-            "۲- شاهزاده و گدا (۱۳۹۳)\n"
-            "۳- قدم زدن در بهشت (۱۳۹۱)\n"
-            "۴- شب هزار و یکم (۱۳۸۸ - شبکه اول سیما)\n"
-            "۵- عشق سال‌های جنگ (۱۳۷۹ - شبکه سوم سیما)\n"
-            "۶- بهترین تابستان من (۱۳۷۲ - پرمخاطب‌ترین مجموعه)\n"
-            "۷- برکت (۱۳۹۷)\n"
-            "۸- مشتری‌مداری (۱۴۰۰)\n"
+            "📺 **فهرست کامل سریال‌ها و فیلم‌های داستانی (کارگردان و تهیه‌کننده: علی بهادر):**\n\n"
+            "۱️⃣ **مجموعه تلویزیونی «بهترین تابستان من» (۱۳۷۲):**\n"
+            "• تهیه‌کننده و کارگردان: علی بهادر\n"
+            "• یکی از پرمخاطب‌ترین و خاطره‌انگیزترین مجموعه‌های تلویزیونی دهه ۷۰ با موضوع نوجوانان و دفاع مقدس.\n\n"
+            "۲️⃣ **مجموعه تلویزیونی «عشق سال‌های جنگ» (۱۳۷۹):**\n"
+            "• کارگردان: علی بهادر\n"
+            "• روایتی دراماتیک و عمیق از عواطف، زندگی و مقاومت در بستر سال‌های دفاع مقدس با بازی هنرمندان برجسته.\n\n"
+            "۳️⃣ **مجموعه تلویزیونی «شب هزار و یکم» (۱۳۸۸ - شبکه اول سیما):**\n"
+            "• کارگردان: علی بهادر\n"
+            "• مجموعه‌ای پربیننده با حضور بازیگران نام‌آشنا نظیر دانیال حکیمی، علیرضا خمسه، شیوا خنیاگر و...\n\n"
+            "۴️⃣ **تله‌فیلم‌ها و آثار نمایشی:**\n"
+            "• **قدم زدن در بهشت** (۱۳۹۱)\n"
+            "• **ارثیه پرماجرا** (۱۳۹۳)\n"
+            "• **شاهزاده و گدا** (۱۳۹۳)\n"
+            "• **برکت** (۱۳۹۷)\n"
+            "• **مشتری‌مداری** (۱۴۰۰)"
         )
         await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
         try:
@@ -378,8 +385,16 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             pass
 
     elif data == "port_docs":
-        keyboard = [[InlineKeyboardButton("🔙 بازگشت به نمونه کارها", callback_data="portfolio")]]
-        text = "📽️ مستند «زندگی»، مستندهای برون‌مرزی نوروز در آسیای میانه، مجموعه «روایتی از رسانه» و ده‌ها اثر مستند فاخر دیگر."
+        keyboard = [
+            [InlineKeyboardButton("💬 ثبت سفارش مستند", callback_data="start_order")],
+            [InlineKeyboardButton("🔙 بازگشت به نمونه کارها", callback_data="portfolio")]
+        ]
+        text = (
+            "📽️ **مستندها و مستند داستانی:**\n\n"
+            "• **مستند «زندگی»:** روایت زندگی و تلاش‌های «محسن محسنی» که جوایز ارزشمندی از جمله جشنواره بین‌المللی فیلم رشد، جشنواره دفاع مقدس و جشنواره فیلم همدان را کسب نمود.\n"
+            "• **مستندهای برون‌مرزی:** تولید و ساخت مستندهای فرهنگی در خصوص سنت‌ها و نوروز در آسیای میانه.\n"
+            "• **مجموعه «روایتی از رسانه»:** مستندهای تحلیلی و گزارشی پیرامون عملکرد رسانه ملی و چهره‌های ماندگار هنر و مقاومت."
+        )
         await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
         try:
             await query.message.delete()
@@ -387,8 +402,16 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             pass
 
     elif data == "port_gas":
-        keyboard = [[InlineKeyboardButton("🔙 بازگشت به نمونه کارها", callback_data="portfolio")]]
-        text = "⛽ مجموعه مستند پژوهشی «گاز انرژی پاک با نیم قرن تلاش» و کتاب مرجع ۱۰۱۸ صفحه‌ای چاپ ۱۳۹۵."
+        keyboard = [
+            [InlineKeyboardButton("💬 سفارش مستندهای صنعتی و سازمانی", callback_data="start_order")],
+            [InlineKeyboardButton("🔙 بازگشت به نمونه کارها", callback_data="portfolio")]
+        ]
+        text = (
+            "⛽ **پروژه‌های ملی نفت و گاز و کتاب مرجع:**\n\n"
+            "• **کتاب مرجع «گاز؛ انرژی پاک با نیم قرن تلاش» (چاپ ۱۳۹۵):**\n"
+            "اثری مستند، پژوهشی و ماندگار در ۱۰۱۸ صفحه که به مناسبت پنجاهمین سالگرد تأسیس شرکت ملی گاز ایران به عنوان نویسنده و مؤلف همکار (با مجید بوجارزاده) تدوین، تنظیم و منتشر گردید.\n"
+            "• **مستندهای تخصصی صنعت نفت:** ساخت و تولید مستندهای ساختاری و تاریخ شفاهی موزه‌ها و اسناد صنعت نفت کشور."
+        )
         await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
         try:
             await query.message.delete()
@@ -396,8 +419,16 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             pass
 
     elif data == "port_anim":
-        keyboard = [[InlineKeyboardButton("🔙 بازگشت به نمونه کارها", callback_data="portfolio")]]
-        text = "🎨 انیمیشن طنز و آموزشی «اسرافی و انصافی» با محوریت ایمنی گاز شهری."
+        keyboard = [
+            [InlineKeyboardButton("💬 سفارش انیمیشن و تیزر", callback_data="start_order")],
+            [InlineKeyboardButton("🔙 بازگشت به نمونه کارها", callback_data="portfolio")]
+        ]
+        text = (
+            "🎨 **انیمیشن‌های آموزشی و طنز:**\n\n"
+            "• **مجموعه انیمیشن «اسرافی و انصافی»:**\n"
+            "مجموعه‌ای طنز، جذاب و آموزشی با محوریت فرهنگ‌سازی ایمنی و مصرف بهینه گاز شهری.\n"
+            "• کاراکتر هوشمند «انصافی» به عنوان مشاور دانا، نکات ایمنی را به خانواده «اسرافی» منتقل می‌کند تا زبانی مؤثر برای آموزش عمومی باشد."
+        )
         await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
         try:
             await query.message.delete()
@@ -405,8 +436,16 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             pass
 
     elif data == "port_awards":
-        keyboard = [[InlineKeyboardButton("🔙 بازگشت به نمونه کارها", callback_data="portfolio")]]
-        text = "🏆 جوایز جشنواره بین‌المللی فیلم رشد، جشنواره دفاع مقدس و لوح‌های تقدیر مدیران ارشد."
+        keyboard = [
+            [InlineKeyboardButton("💬 ثبت سفارش پروژه حرفه‌ای", callback_data="start_order")],
+            [InlineKeyboardButton("🔙 بازگشت به نمونه کارها", callback_data="portfolio")]
+        ]
+        text = (
+            "🏆 **افتخارات، جوایز و لوح‌های سپاس:**\n\n"
+            "• دیپلم افتخار و تندیس از جشنواره بین‌المللی فیلم رشد\n"
+            "• جوایز برگزیده جشنواره سراسری فیلم دفاع مقدس\n"
+            "• لوح‌های تقدیر و سپاس از وزرا، معاونین رئیس‌جمهور، مدیران عامل سازمان‌ها و صداوسیما برای ساخت اثر فاخر و مدیریت فرهنگی."
+        )
         await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
         try:
             await query.message.delete()
@@ -415,11 +454,15 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     elif data == "interviews":
         keyboard = [
-            [InlineKeyboardButton("📰 روزنامه اطلاعات (۲۰ مرداد ۱۴۰۵)", url="https://www.ettelaat.com/news/161537/%D8%B3%DB%8C%D9%86%D9%85%D8%A7%DB%8C-%D9%85%D8%B3%D8%AA%D9%86%D8%AF-%D8%A8%D9%87-%D9%85%D8%AF%DB%8C%D8%B1%D8%A7%D9%86%DB%8C-%D8%AC%D8%B3%D9%88%D8%B1-%D9%86%DB%8C%D8%A7%D8%B2-%D8%AF%D8%A7%D8%B1%D8%AF")],
+            [InlineKeyboardButton("📰 روزنامه اطلاعات (۲۰ مرداد ۱۴۰۵)", url="https://www.ettelaat.com/news/161537/%D8%B3%DB%8C%D9%86%D9%85%D8%A7%DB%8C-%D9%85%D8%B3%D8%AA%D9%86%D8%AF-%D8%A8%D9%87-%D9%مدیرانی-جسور-نیاز-دارد")],
             [InlineKeyboardButton("📰 هفته‌نامه صدا و سیما", url="https://iribonline.ir/portal/newsview/125403")],
             [InlineKeyboardButton("🔙 بازگشت به منوی اصلی", callback_data="back_to_menu")]
         ]
-        text = "📰 **مصاحبه‌ها و پوشش رسانه‌ای علی بهادر:**"
+        text = (
+            "📰 **مصاحبه‌ها و پوشش رسانه‌ای علی بهادر:**\n\n"
+            "• **روزنامه اطلاعات (۲۰ مرداد ۱۴۰۵):** مصاحبه تخصصی با عنوان «۱۲ نگاه به سینمای مستند؛ از چالش‌ها تا فرصت‌ها» و تأکید بر اینکه سینمای مستند به مدیرانی جسور نیاز دارد.\n"
+            "• **هفته‌نامه صدا و سیما:** گفتگوهای تفصیلی پیرامون جریان‌سازی سریال‌های تلویزیونی و خاطرات ساخت آثار ماندگار دفاع مقدس."
+        )
         await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
         try:
             await query.message.delete()
@@ -430,8 +473,9 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         keyboard = [[InlineKeyboardButton("🔙 بازگشت به منوی اصلی", callback_data="back_to_menu")]]
         await query.message.reply_text(
             "👤 **درباره علی بهادر:**\n\n"
-            "• کارشناسی ارشد ادبیات نمایشی و کارگردانی از دانشکده صداوسیما.\n"
-            "• مدیر گروه حماسه و دفاع شبکه یک سیما، سرپرست واحد دوبلاژ شبکه یک.\n"
+            "• کارشناس ارشد ادبیات نمایشی و دانش‌آموخته کارگردانی سینما.\n"
+            "• سابقه مدیریت گروه حماسه و دفاع شبکه یک سیما و سرپرستی واحد دوبلاژ شبکه یک.\n"
+            "• بیش از چهار دهه فعالیت حرفه‌ای در عرصه نویسندگی، کارگردانی، تهیه‌کنندگی و مدیریت فرهنگی.\n"
             "• مدیرعامل مؤسسه هنری و سینمایی بهادر فیلم.",
             reply_markup=InlineKeyboardMarkup(keyboard),
             parse_mode="Markdown"
@@ -446,7 +490,13 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton("🌐 وب‌سایت رسمی", url="https://alibahador.ir")],
             [InlineKeyboardButton("🔙 بازگشت به منوی اصلی", callback_data="back_to_menu")]
         ]
-        text = "💳 **کارت ویزیت دیجیتال:**\nمدیرعامل: علی بهادر\nشماره تماس: `+989121711063`\nوب‌سایت: alibahador.ir"
+        text = (
+            "💳 **کارت ویزیت دیجیتال مؤسسه بهادر فیلم:**\n\n"
+            "🎬 **مدیرعامل:** علی بهادر (کارگردان و تهیه‌کننده)\n"
+            "📞 **تلفن تماس مستقیم:** `+989121711063`\n"
+            "🌐 **وب‌سایت رسمی:** alibahador.ir\n"
+            "✉️ بستری تخصصی برای تولید سریال، مستندهای فاخر، تیزر و انیمیشن."
+        )
         await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
         try:
             await query.message.delete()
@@ -487,7 +537,7 @@ def main():
     flask_thread.daemon = True
     flask_thread.start()
 
-    logger.info("Bot is starting polling with updated order workflow...")
+    logger.info("Bot is starting polling with full detailed portfolio & order workflow...")
     application.run_polling()
 
 if __name__ == '__main__':
