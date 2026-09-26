@@ -107,7 +107,10 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.callback_query:
         query = update.callback_query
         await query.answer()
-        try: await query.message.delete() except: pass
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
         await context.bot.send_photo(
             chat_id=query.message.chat_id,
             photo=logo_file_id,
@@ -142,7 +145,10 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if data == "back_to_menu":
         welcome_text = "🎬 به منوی اصلی موسسه هنری بهادر فیلم خوش آمدید.\nلطفاً بخش مورد نظر را انتخاب کنید:"
-        try: await query.message.delete() except: pass
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
         await context.bot.send_photo(
             chat_id=query.message.chat_id,
             photo=PHOTO_IDS.get("logo"),
@@ -162,7 +168,10 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton("🔙 بازگشت به منوی اصلی", callback_data="back_to_menu")]
         ]
         text = "📁 **بخش نمونه‌کارها و رزومه تصویری علی بهادر**\n\nلطفاً حوزه مورد نظر خود را برای مشاهده آثار همراه با پوستر و تصویر انتخاب کنید:"
-        try: await query.message.delete() except: pass
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
         await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
 
     elif data == "port_series":
@@ -178,7 +187,10 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton("🔙 بازگشت به نمونه کارها", callback_data="portfolio")]
         ]
         text = "📺 **سریال‌های تلویزیونی و فیلم‌های داستانی:**\nلطفاً اثر مورد نظر خود را برای مشاهده پوستر و جزئیات انتخاب کنید:"
-        try: await query.message.delete() except: pass
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
         await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
 
     elif data == "port_docs":
@@ -188,7 +200,10 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton("🔙 بازگشت به نمونه کارها", callback_data="portfolio")]
         ]
         text = "🎥 **مستندهای تلویزیونی و بین‌المللی:**\nلطفاً مستند مورد نظر خود را انتخاب کنید:"
-        try: await query.message.delete() except: pass
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
         await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
 
     elif data == "port_gas":
@@ -197,7 +212,10 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton("🔙 بازگشت به نمونه کارها", callback_data="portfolio")]
         ]
         text = "⛽ **پروژه‌های ملی نفت و گاز و کتاب مرجع:**\nلطفاً گزینه مورد نظر را انتخاب کنید:"
-        try: await query.message.delete() except: pass
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
         await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
 
     elif data == "port_anim":
@@ -206,7 +224,10 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton("🔙 بازگشت به نمونه کارها", callback_data="portfolio")]
         ]
         text = "🎨 **انیمیشن‌های آموزشی و طنز:**\nلطفاً گزینه مورد نظر را انتخاب کنید:"
-        try: await query.message.delete() except: pass
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
         await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
 
     elif data == "port_awards":
@@ -216,92 +237,137 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton("🔙 بازگشت به نمونه کارها", callback_data="portfolio")]
         ]
         text = "🏆 **افتخارات، جوایز و لوح‌های سپاس:**\nلطفاً گزینه مورد نظر را انتخاب کنید:"
-        try: await query.message.delete() except: pass
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
         await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
 
     elif data == "work_tabestan":
         kb = [[InlineKeyboardButton("🔙 بازگشت به سریال‌ها", callback_data="port_series")]]
         caption = "⭐ **بهترین تابستان من**\n\nکارگردانی سریال طنز دفاع مقدس؛ پرمخاطب‌ترین مجموعه تلویزیونی زمان پخش."
         await context.bot.send_photo(chat_id=query.message.chat_id, photo=PHOTO_IDS["work_1"], caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
-        try: await query.message.delete() except: pass
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
 
     elif data == "work_eshgh":
         kb = [[InlineKeyboardButton("🔙 بازگشت به سریال‌ها", callback_data="port_series")]]
         caption = "❤️ **عشق سال‌های جنگ**\n\nکارگردانی و تهیه‌کنندگی سریال با موضوع دفاع مقدس و درام اجتماعی."
         await context.bot.send_photo(chat_id=query.message.chat_id, photo=PHOTO_IDS["work_3"], caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
-        try: await query.message.delete() except: pass
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
 
     elif data == "work_shab":
         kb = [[InlineKeyboardButton("🔙 بازگشت به سریال‌ها", callback_data="port_series")]]
         caption = "🌙 **شب هزار و یکم**\n\nکارگردانی سریال تلویزیونی با حضور بازیگران برجسته (محصول شبکه اول سیما)."
         await context.bot.send_photo(chat_id=query.message.chat_id, photo=PHOTO_IDS["work_13"], caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
-        try: await query.message.delete() except: pass
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
 
     elif data == "work_ghadam":
         kb = [[InlineKeyboardButton("🔙 بازگشت به سریال‌ها", callback_data="port_series")]]
         caption = "🌿 **قدم زدن در بهشت**\n\nکارگردانی تله‌فیلم با ساختار سینمایی و نوآورانه."
         await context.bot.send_photo(chat_id=query.message.chat_id, photo=PHOTO_IDS["work_4"], caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
-        try: await query.message.delete() except: pass
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
 
     elif data == "work_ershieh":
         kb = [[InlineKeyboardButton("🔙 بازگشت به سریال‌ها", callback_data="port_series")]]
         caption = "💼 **ارثیه پرماجرا**\n\nتهیه‌کنندگی فیلم سینمایی ویدیویی پرمخاطب با حضور بازیگران سرشناس."
         await context.bot.send_photo(chat_id=query.message.chat_id, photo=PHOTO_IDS["work_5"], caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
-        try: await query.message.delete() except: pass
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
 
     elif data == "work_shahzadeh":
         kb = [[InlineKeyboardButton("🔙 بازگشت به سریال‌ها", callback_data="port_series")]]
         caption = "👑 **شاهزاده و گدا (۱۳۹۳)**\n\nمحصول موسسه هنری بهادر فیلم به تهیه‌کنندگی علی بهادر."
         await context.bot.send_photo(chat_id=query.message.chat_id, photo=PHOTO_IDS["work_6"], caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
-        try: await query.message.delete() except: pass
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
 
     elif data == "work_moshtari":
         kb = [[InlineKeyboardButton("🔙 بازگشت به سریال‌ها", callback_data="port_series")]]
         caption = "🤝 **مشتری‌مداری (۱۴۰۱)**\n\nسریال آموزشی ۳۰ قسمتی به تهیه‌کنندگی و کارگردانی علی بهادر."
         await context.bot.send_photo(chat_id=query.message.chat_id, photo=PHOTO_IDS["work_8"], caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
-        try: await query.message.delete() except: pass
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
 
     elif data == "work_barakat":
         kb = [[InlineKeyboardButton("🔙 بازگشت به سریال‌ها", callback_data="port_series")]]
         caption = "🌾 **برکت (۱۳۹۷)**\n\nتهیه‌کنندگی و کارگردانی مینی‌سریال تولید شده در بنیاد برکت."
         await context.bot.send_photo(chat_id=query.message.chat_id, photo=PHOTO_IDS["work_12"], caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
-        try: await query.message.delete() except: pass
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
 
     elif data == "work_gas_book":
         kb = [[InlineKeyboardButton("🔙 بازگشت به پروژه گاز", callback_data="port_gas")]]
         caption = "📖 **کتاب مرجع گاز؛ انرژی پاک با نیم قرن تلاش**\n\n۱۰۱۸ صفحه، تاریخ شفاهی ۵۰ ساله شرکت ملی گاز ایران."
         await context.bot.send_photo(chat_id=query.message.chat_id, photo=PHOTO_IDS["work_11"], caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
-        try: await query.message.delete() except: pass
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
 
     elif data == "work_paris":
         kb = [[InlineKeyboardButton("🔙 بازگشت به مستندها", callback_data="port_docs")]]
         caption = "🌍 **مستند کنگره جهانی گاز پاریس (۲۰۱۵)**\n\nمستند تخصصی، صنعتی و بین‌المللی."
         await context.bot.send_photo(chat_id=query.message.chat_id, photo=PHOTO_IDS["work_14"], caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
-        try: await query.message.delete() except: pass
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
 
     elif data == "work_zendegi":
         kb = [[InlineKeyboardButton("🔙 بازگشت به مستندها", callback_data="port_docs")]]
         caption = "🏆 **مستند «زندگی»**\n\nبرنده جوایز متعدد از جشنواره‌های معتبر ملی (جشنواره رشد و دفاع مقدس)."
         await context.bot.send_photo(chat_id=query.message.chat_id, photo=PHOTO_IDS["work_2"], caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
-        try: await query.message.delete() except: pass
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
 
     elif data == "work_esrafi":
         kb = [[InlineKeyboardButton("🔙 بازگشت به انیمیشن‌ها", callback_data="port_anim")]]
         caption = "💡 **انیمیشن آموزشی «اسرافی و انصافی»**\n\nمجموعه ۳۰ قسمتی طنز با محوریت ایمنی گاز شهری و مشاوره شخصیت حکیمانه انصافی."
         await context.bot.send_photo(chat_id=query.message.chat_id, photo=PHOTO_IDS["work_7"], caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
-        try: await query.message.delete() except: pass
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
 
     elif data == "award_roshd":
         kb = [[InlineKeyboardButton("🔙 بازگشت به جوایز", callback_data="port_awards")]]
         caption = "🎖 **لوح تقدیر جشنواره بین‌المللی فیلم رشد و جشنواره دفاع مقدس**"
         await context.bot.send_photo(chat_id=query.message.chat_id, photo=PHOTO_IDS["award_15"], caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
-        try: await query.message.delete() except: pass
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
 
     elif data == "award_tandis":
         kb = [[InlineKeyboardButton("🔙 بازگشت به جوایز", callback_data="port_awards")]]
         caption = "🏆 **تندیس‌ها و لوح‌های سپاس و تقدیر ویژه مدیران ارشد**"
         await context.bot.send_photo(chat_id=query.message.chat_id, photo=PHOTO_IDS["award_16"], caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
-        try: await query.message.delete() except: pass
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
 
     elif data == "interviews":
         keyboard = [
@@ -310,7 +376,10 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton("🔙 بازگشت به منوی اصلی", callback_data="back_to_menu")]
         ]
         text = "📰 **بخش مصاحبه‌ها و پوشش رسانه‌ای:**\nبرای مشاهده تصاویر و جزئیات مصاحبه‌های علی بهادر روی گزینه‌های زیر کلیک کنید:"
-        try: await query.message.delete() except: pass
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
         await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
 
     elif data == "view_ettelaat_img":
@@ -327,7 +396,10 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 reply_markup=InlineKeyboardMarkup(keyboard),
                 parse_mode="Markdown"
             )
-            try: await query.message.delete() except: pass
+            try:
+                await query.message.delete()
+            except Exception:
+                pass
         except Exception:
             await query.message.reply_text(caption_text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
 
@@ -337,7 +409,10 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "📰 **مصاحبه با هفته‌نامه صدا و سیما (مرداد ۱۴۰۵)**\n\n"
             "عنوان: «تصویر مقاومت در آیینه رسانه؛ نیم قرن تلاش برای هنر و وطن» (گفتگو با عبدالرحمن شلیبیان)"
         )
-        try: await query.message.delete() except: pass
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
         await query.message.reply_text(caption_text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
 
     elif data == "about":
@@ -349,7 +424,10 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "• **مدیرعامل:** مؤسسه هنری و سینمایی بهادر فیلم\n\n"
             "هدف ما به تصویر کشیدن فرهنگ، هنر و تاریخ پربار ایران عزیز است."
         )
-        try: await query.message.delete() except: pass
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
         await query.message.reply_text(about_text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
 
     elif data == "digital_card":
@@ -364,7 +442,10 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "🎯 **تخصص:** کارگردانی، تهیه‌کنندگی و نویسندگی\n"
             "🌐 **وب‌سایت:** alibahador.ir"
         )
-        try: await query.message.delete() except: pass
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
         await query.message.reply_text(card_text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
 
     elif data == "services":
@@ -376,7 +457,10 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "۳. ساخت تیزرهای تبلیغاتی و آگهی‌های بازرگانی\n"
             "۴. تولید انیمیشن‌های آموزشی و طنز"
         )
-        try: await query.message.delete() except: pass
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
         await query.message.reply_text(services_text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
 
     elif data == "faq":
@@ -386,7 +470,10 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "• **چگونه پروژه ثبت کنیم؟** از طریق دکمه «ثبت سفارش» در منوی اصلی.\n"
             "• **چگونه با مدیریت ارتباط بگیریم؟** از طریق دکمه «ارسال پیام به مدیریت»."
         )
-        try: await query.message.delete() except: pass
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
         await query.message.reply_text(faq_text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
 
 async def start_order(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -400,7 +487,10 @@ async def start_order(update: Update, context: ContextTypes.DEFAULT_TYPE):
         [InlineKeyboardButton("انصراف", callback_data="back_to_menu")]
     ]
     text = "🛒 **ثبت سفارش جدید - مرحله ۱ از ۳**\n\nلطفاً نوع پروژه مورد نظر خود را انتخاب کنید:"
-    try: await query.message.delete() except: pass
+    try:
+        await query.message.delete()
+    except Exception:
+        pass
     await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
     return PROJECT_TYPE
 
@@ -419,7 +509,10 @@ async def receive_project_type(update: Update, context: ContextTypes.DEFAULT_TYP
         
     context.user_data['project_type'] = mapping.get(query.data, "نامشخص")
     text = "🛒 **ثبت سفارش جدید - مرحله ۲ از ۳**\n\nلطفاً **نام و نام خانوادگی خود را ارسال کنید:**"
-    try: await query.message.delete() except: pass
+    try:
+        await query.message.delete()
+    except Exception:
+        pass
     await query.message.reply_text(text, parse_mode="Markdown")
     return USER_NAME
 
@@ -468,7 +561,10 @@ async def contact_admin_start(update: Update, context: ContextTypes.DEFAULT_TYPE
     await query.answer()
     keyboard = [[InlineKeyboardButton("انصراف", callback_data="back_to_menu")]]
     text = "✉️ **ارسال پیام به مدیریت**\n\nلطفاً پیام، نظر یا درخواست خود را بنویسید تا برای مدیریت ارسال شود:"
-    try: await query.message.delete() except: pass
+    try:
+        await query.message.delete()
+    except Exception:
+        pass
     await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
     return ADMIN_MESSAGE
 
