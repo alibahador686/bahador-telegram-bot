@@ -74,10 +74,6 @@ def stats():
         "total_admin_messages": stats_data["messages_count"]
     })
 
-def run_flask():
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host="0.0.0.0", port=port)
-
 def get_main_menu():
     keyboard = [
         [InlineKeyboardButton("📺 نمونه کارها و رزومه تصویری", callback_data="portfolio")],
@@ -593,12 +589,17 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("عملیات لغو شد.", reply_markup=get_main_menu())
     return ConversationHandler.END
 
+def run_flask():
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
+
 def main():
     t = Thread(target=run_flask)
     t.daemon = True
     t.start()
 
     application = ApplicationBuilder().token(TOKEN).build()
+    
     order_handler = ConversationHandler(
         entry_points=[CallbackQueryHandler(start_order, pattern="^start_order$")],
         states={
