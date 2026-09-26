@@ -598,8 +598,7 @@ def main():
     t.daemon = True
     t.start()
 
-    application = ApplicationBuilder().token(TOKEN).drop_pending_updates(True).build()
-
+    application = ApplicationBuilder().token(TOKEN).build()
     order_handler = ConversationHandler(
         entry_points=[CallbackQueryHandler(start_order, pattern="^start_order$")],
         states={
