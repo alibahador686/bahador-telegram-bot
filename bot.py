@@ -19,6 +19,7 @@ def run_http_server():
 
 # استارت کردن وب‌سرور در پس‌زمینه هم‌زمان با ربات
 threading.Thread(target=run_http_server, daemon=True).start()
+
 import os
 import logging
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
