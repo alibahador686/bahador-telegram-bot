@@ -608,7 +608,7 @@ def main():
         fallbacks=[CommandHandler('cancel', cancel)]
     )
 
-    admin_msg_handler = ConversationHandler(
+   admin_msg_handler = ConversationHandler(
         entry_points=[CallbackQueryHandler(contact_admin_start, pattern="^contact_admin$")],
         states={
             ADMIN_MESSAGE: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_admin_message)]
@@ -622,10 +622,10 @@ def main():
     application.add_handler(admin_msg_handler)
     application.add_handler(CallbackQueryHandler(button_handler))
 
-    logger.info("Bot is running successfully with Polling mode and full photo IDs!")
-    
-# آپدیت‌ها رفع کامل خطای پورت و کانف...)
-application.run_polling(drop_pending_updates=True)
+    logger.info("Bot is running successfully with Polling mode and Flask Web server!")
+    application.run_polling(drop_pending_updates=True)
 
 if __name__ == '__main__':
+    t = Thread(target=run_web)
+    t.start()
     main()
