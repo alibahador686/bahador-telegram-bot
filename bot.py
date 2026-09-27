@@ -2,20 +2,23 @@ import os
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import threading
 
-# راه اندازی یک وب سرور ساده برای پاسخ به پورت رندر
-class SimpleHandler(BaseHTTPRequestHandler):
+# ایجاد یک سرور بسیار ساده HTTP برای پاسخ به نیاز رندر
+class HealthCheckHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         self.send_response(200)
         self.end_headers()
-        self.wfile.write(b"Bot is running!")
+        self.wfile.write(b"OK")
+        
+    def log_message(self, format, *args):
+        pass # برای اینکه لاگ‌های اضافی سرور صفحه را شلوغ نکند
 
-def run_server():
+def run_http_server():
     port = int(os.environ.get("PORT", 10000))
-    server = HTTPServer(("0.0.0.0", port), SimpleHandler)
+    server = HTTPServer(("0.0.0.0", port), HealthCheckHandler)
     server.serve_forever()
 
-# اجرای وب‌سرور در پشت صحنه (موازی با ربات)
-threading.Thread(target=run_server, daemon=True).start()
+# استارت کردن وب‌سرور در پس‌زمینه هم‌زمان با ربات
+threading.Thread(target=run_http_server, daemon=True).start()
 import os
 import logging
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
