@@ -595,9 +595,26 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("عملیات لغو شد.", reply_markup=get_main_menu())
     return ConversationHandler.END
 
+import os
+from threading import Thread
+from flask import Flask
+
+# ایجاد وب‌سرور سبک برای رندر
+app_web = Flask('')
+
+@app_web.route('/')
+def home():
+    return "Bot is running actively!"
+
+def run_web():
+    port = int(os.environ.get('PORT', 10000))
+    app_web.run(host='0.0.0.0', port=port)
+
 def main():
+    # ساخت اپلیکیشن تلگرام
     application = ApplicationBuilder().token(TOKEN).build()
-    
+
+    # تعریف هندلرها
     order_handler = ConversationHandler(
         entry_points=[CallbackQueryHandler(start_order, pattern="^start_order$")],
         states={
@@ -608,7 +625,7 @@ def main():
         fallbacks=[CommandHandler('cancel', cancel)]
     )
 
-   admin_msg_handler = ConversationHandler(
+    admin_msg_handler = ConversationHandler(
         entry_points=[CallbackQueryHandler(contact_admin_start, pattern="^contact_admin$")],
         states={
             ADMIN_MESSAGE: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_admin_message)]
@@ -623,9 +640,13 @@ def main():
     application.add_handler(CallbackQueryHandler(button_handler))
 
     logger.info("Bot is running successfully with Polling mode and Flask Web server!")
+    
+    # اجرای وب‌سرور در پس‌زمینه
+    t = Thread(target=run_web)
+    t.start()
+
+    # اجرای ربات
     application.run_polling(drop_pending_updates=True)
 
 if __name__ == '__main__':
-    t = Thread(target=run_web)
-    t.start()
     main()
