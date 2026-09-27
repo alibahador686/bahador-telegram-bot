@@ -624,8 +624,8 @@ def main():
 
     logger.info("Bot is running successfully with Polling mode and full photo IDs!")
     
-    # اجرای ربات با متد پایدار و بدون نیاز به وب‌سرور داخلی (رفع کامل خطای پورت و کانفlicting آپدیت‌ها)
-    application.run_polling(drop_pending_updates=True)
+# آپدیت‌ها رفع کامل خطای پورت و کانف...)
+application.run_polling(drop_pending_updates=True)
 
 if __name__ == '__main__':
     main()
