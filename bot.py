@@ -596,35 +596,39 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("عملیات لغو شد.", reply_markup=get_main_menu())
     return ConversationHandler.END
 
-import os
-from threading import Thread
-from flask import Flask
-
-# ایجاد وب‌سرور سبک برای رندر
-app_web = Flask('')
-
-@app_web.route('/')
-def home():
-    return "Bot is running actively!"
-
-def run_web():
-    port = int(os.environ.get('PORT', 10000))
-    app_web.run(host='0.0.0.0', port=port)
-
 def main():
-    # راه‌اندازی وب‌سرور Flask در پس‌زمینه برای هماهنگی با Render
-    t = Thread(target=run_web, daemon=True)
-    t.start()
+    application = ApplicationBuilder().token(TOKEN).build()
 
-    # ساخت اپلیکیشن تلگرام
-    application = Application.builder().token(TOKEN).build()
+    # تعریف ConversationHandler برای ثبت سفارش
+    order_conv_handler = ConversationHandler(
+        entry_points=[CallbackQueryHandler(start_order, pattern="^start_order$")],
+        states={
+            PROJECT_TYPE: [CallbackQueryHandler(receive_project_type)],
+            USER_NAME: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_user_name)],
+            USER_PHONE: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_user_phone)],
+        },
+        fallbacks=[CommandHandler("cancel", cancel)],
+    )
 
-    # (هندلرها و دستورات شما در این بخش ثبت شده‌اند، به آن‌ها دست نزنید)
-    # application.add_handler(...)
+    # تعریف ConversationHandler برای ارسال پیام به مدیریت
+    contact_conv_handler = ConversationHandler(
+        entry_points=[CallbackQueryHandler(contact_admin_start, pattern="^contact_admin$")],
+        states={
+            ADMIN_MESSAGE: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_admin_message)],
+        },
+        fallbacks=[CommandHandler("cancel", cancel)],
+    )
+
+    # افزودن هندلرها به اپلیکیشن
+    application.add_handler(CommandHandler("start", start))
+    application.add_handler(CommandHandler("stats", stats_command))
+    application.add_handler(order_conv_handler)
+    application.add_handler(contact_conv_handler)
+    application.add_handler(CallbackQueryHandler(button_handler))
 
     logger.info("Bahador Film Bot is starting and polling for updates...")
     
-    # اجرای اصلی ربات (این خط مانع از متوقف شدن ربات می‌شود)
+    # اجرای اصلی ربات
     application.run_polling(drop_pending_updates=True)
 
 if __name__ == "__main__":
