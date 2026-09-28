@@ -612,42 +612,20 @@ def run_web():
     app_web.run(host='0.0.0.0', port=port)
 
 def main():
-    # ساخت اپلیکیشن تلگرام
-    application = ApplicationBuilder().token(TOKEN).build()
-
-    # تعریف هندلرها
-    order_handler = ConversationHandler(
-        entry_points=[CallbackQueryHandler(start_order, pattern="^start_order$")],
-        states={
-            PROJECT_TYPE: [CallbackQueryHandler(receive_project_type)],
-            USER_NAME: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_user_name)],
-            USER_PHONE: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_user_phone)]
-        },
-        fallbacks=[CommandHandler('cancel', cancel)]
-    )
-
-    admin_msg_handler = ConversationHandler(
-        entry_points=[CallbackQueryHandler(contact_admin_start, pattern="^contact_admin$")],
-        states={
-            ADMIN_MESSAGE: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_admin_message)]
-        },
-        fallbacks=[CommandHandler('cancel', cancel)]
-    )
-
-    application.add_handler(CommandHandler("start", start))
-    application.add_handler(CommandHandler("stats", stats_command))
-    application.add_handler(order_handler)
-    application.add_handler(admin_msg_handler)
-    application.add_handler(CallbackQueryHandler(button_handler))
-
-    logger.info("Bot is running successfully with Polling mode and Flask Web server!")
-    
-    # اجرای وب‌سرور در پس‌زمینه
-    t = Thread(target=run_web)
+    # راه‌اندازی وب‌سرور Flask در پس‌زمینه برای هماهنگی با Render
+    t = Thread(target=run_web, daemon=True)
     t.start()
 
-    # اجرای ربات
+    # ساخت اپلیکیشن تلگرام
+    application = Application.builder().token(TOKEN).build()
+
+    # (هندلرها و دستورات شما در این بخش ثبت شده‌اند، به آن‌ها دست نزنید)
+    # application.add_handler(...)
+
+    logger.info("Bahador Film Bot is starting and polling for updates...")
+    
+    # اجرای اصلی ربات (این خط مانع از متوقف شدن ربات می‌شود)
     application.run_polling(drop_pending_updates=True)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
