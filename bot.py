@@ -1,6 +1,8 @@
 import os
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import threading
+import random
+from datetime import datetime
 
 # ایجاد یک سرور بسیار ساده HTTP برای پاسخ به نیاز رندر
 class HealthCheckHandler(BaseHTTPRequestHandler):
@@ -81,13 +83,22 @@ stats_data = {
 PROJECT_TYPE, USER_NAME, USER_PHONE = range(3)
 ADMIN_MESSAGE = range(1)
 
+def get_rotational_photo():
+    """انتخاب هوشمند و روزانه پوستر از میان ۲۱ عکس آرشیو"""
+    all_keys = list(PHOTO_IDS.keys())
+    # چرخش بر اساس روز سال برای تغییر روزانه پوستر هدر
+    day_of_year = datetime.now().timetuple().tm_yday
+    selected_key = all_keys[day_of_year % len(all_keys)]
+    return PHOTO_IDS.get(selected_key, PHOTO_IDS["logo"])
+
 def get_main_menu():
     keyboard = [
+        [InlineKeyboardButton("🛒 ثبت سفارش و درخواست مشاوره", callback_data="start_order")],
         [InlineKeyboardButton("📺 نمونه کارها و رزومه تصویری", callback_data="portfolio")],
         [InlineKeyboardButton("ℹ️ درباره مدیرعامل و موسسه", callback_data="about")],
         [InlineKeyboardButton("💳 کارت ویزیت دیجیتال", callback_data="digital_card")],
-        [InlineKeyboardButton("✉️ ارسال پیام به مدیریت", callback_data="contact_admin")],
-        [InlineKeyboardButton("📋 خدمات و تعرفه‌ها", callback_data="services"), InlineKeyboardButton("🛒 ثبت سفارش", callback_data="start_order")],
+        [InlineKeyboardButton("✉️️ ارسال پیام به مدیریت", callback_data="contact_admin")],
+        [InlineKeyboardButton("📋 خدمات و تعرفه‌ها", callback_data="services")],
         [InlineKeyboardButton("📰 مصاحبه‌ها و رسانه", callback_data="interviews")],
         [InlineKeyboardButton("❓ پرسش‌های متداول (FAQ)", callback_data="faq")]
     ]
@@ -105,7 +116,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "لطفاً بخش مورد نظر خود را از منوی زیر انتخاب کنید:"
     )
     
-    logo_file_id = PHOTO_IDS.get("logo")
+    header_photo = get_rotational_photo()
     
     if update.callback_query:
         query = update.callback_query
@@ -116,14 +127,14 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             pass
         await context.bot.send_photo(
             chat_id=query.message.chat_id,
-            photo=logo_file_id,
+            photo=header_photo,
             caption=welcome_text,
             reply_markup=get_main_menu(),
             parse_mode="Markdown"
         )
     elif update.message:
         await update.message.reply_photo(
-            photo=logo_file_id,
+            photo=header_photo,
             caption=welcome_text,
             reply_markup=get_main_menu(),
             parse_mode="Markdown"
@@ -154,7 +165,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             pass
         await context.bot.send_photo(
             chat_id=query.message.chat_id,
-            photo=PHOTO_IDS.get("logo"),
+            photo=get_rotational_photo(),
             caption=welcome_text,
             reply_markup=get_main_menu(),
             parse_mode="Markdown"
@@ -423,8 +434,19 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         about_text = (
             "ℹ️ **درباره علی بهادر و مؤسسه هنری بهادر فیلم**\n\n"
             "• **تحصیلات:** کارشناسی ارشد ادبیات نمایشی و لیسانس کارگردانی از دانشکده صداوسیما\n"
-            "• **سوابق اجرایی:** مدیر گروه حماسه و دفاع شبکه یک سیما، مدیر واحد دوبلاژ شبکه یک، شروع فعالیت حرفه‌ای از سال ۱۳۶۰ در واحد خبر همدان\n"
-            "• **مدیرعامل:** مؤسسه هنری و سینمایی بهادر فیلم\n\n"
+            "• **سوابق اجرایی:** مدیر گروه حماسه و دفاع شبکه یک سیما، مدیر واحد دوبلاژ شبکه یک، شروع فعالیت حرفه‌ای از سال ۱۳۶۰ در واحد خبر همدان، بیش از ۱۸ ماه حضور در پوشش رسانه‌ای دوران دفاع مقدس (صداوسیما)\n"
+            "• **مدیرعامل:** مؤسسه فرهنگی و هنری بهادر فیلم\n\n"
+            "📋 **رزومه تفکیک‌شده و سوابق هنری:**\n\n"
+            "🎬 **بخش آثار نمایشی و سریال‌ها:**\n"
+            "• کارگردانی سریال «بهترین تابستان من» (۱۳۷۵ - شبکه ۱)\n"
+            "• کارگردانی سریال «عشق سال‌های جنگ» (۱۳۸۰ - شبکه ۳)\n"
+            "• کارگردانی سریال «شب هزار و یکم» (۱۳۸۷-۱۳۸۸ - شبکه ۱)\n"
+            "• کارگردانی فیلم‌های تلویزیونی (تله‌فیلم): «قدم زدن در بهشت»، «ارثیه پرماجرا»، «شاهزاده و گدا»\n"
+            "• کارگردانی مجموعه‌ها و مینی‌سریال‌ها: «برکت»، «مشتری‌مداری»\n\n"
+            "🎥 **بخش مستندها و پروژه‌های ملی:**\n"
+            "• کارگردانی مستند «زندگی» (۱۳۷۰ - برنده جوایز جشنواره‌های دفاع مقدس، رشد و همدان)\n"
+            "• تولید و کارگردانی مستندهای برون‌مرزی «نوروز در ازبکستان» (برنده ۲ جایزه از جشنواره‌های برون‌مرزی IRIB) و «بدخشان بام جهان» (تاجیکستان)\n"
+            "• تألیف و تدوین کتاب مرجع و ۱۰۱۸ صفحه‌ای «گاز؛ انرژی پاک با نیم قرن تلاش» همراه با تولید مجموعه مستند ۶۳ قسمتی (۱۳۹۵)\n\n"
             "هدف ما به تصویر کشیدن فرهنگ، هنر و تاریخ پربار ایران عزیز است."
         )
         try:
@@ -435,7 +457,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     elif data == "digital_card":
         keyboard = [
-            [InlineKeyboardButton("🌐 وب‌سایت رسمی", url="https://alibahador.ir")],
+            [InlineKeyboardButton("🌐 وب‌‌سایت رسمی", url="https://alibahador.ir")],
             [InlineKeyboardButton("📸 اینستاگرام موسسه", url="https://instagram.com")],
             [InlineKeyboardButton("🔙 بازگشت به منوی اصلی", callback_data="back_to_menu")]
         ]
@@ -470,7 +492,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         keyboard = [[InlineKeyboardButton("🔙 بازگشت به منوی اصلی", callback_data="back_to_menu")]]
         faq_text = (
             "❓ **پرسش‌های متداول (FAQ):**\n\n"
-            "• **چگونه پروژه ثبت کنیم؟** از طریق دکمه «ثبت سفارش» در منوی اصلی.\n"
+            "• **چگونه پروژه ثبت کنیم؟** از طریق دکمه «ثبت سفارش و درخواست مشاوره» در منوی اصلی.\n"
             "• **چگونه با مدیریت ارتباط بگیریم؟** از طریق دکمه «ارسال پیام به مدیریت»."
         )
         try:
