@@ -14,7 +14,7 @@ from telegram.ext import (
     ConversationHandler,
 )
 
-# سرور HTTP ساده برای سازگاری با هاستینگ‌هایی مثل رندر
+# سرور HTTP ساده برای سازگاری با هاستینگ‌ها
 class HealthCheckHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         self.send_response(200)
@@ -33,10 +33,11 @@ threading.Thread(target=run_http_server, daemon=True).start()
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# توکن ربات شما
 TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "8627933053:AAHAo1QSfWDpAUPr_LfJjVSwadzQKX0fJEA")
 ADMIN_CHAT_ID = int(os.environ.get("ADMIN_CHAT_ID", "198728977"))
 
-# شناسه‌های فایل عکس‌ها در تلگرام
+# شناسه‌های فایل عکس‌های مختص بهادر فیلم
 PHOTO_IDS = {
     "logo": "AgACAgQAAxkBAANoarTxcvaLVFFDuPSMVCLQ6XXcCEgAAj8QaxslQqhRHyuGPLEPCTYBAAMCAAN5AAM9BA",
     "work_1": "AgACAgQAAxkBAANZarTpN4VZ_zuBvY8qfr8XmbNw7pkAAjQQaxslQqhRXfvpAAFEs83zAQADAgADeQADPQQ",
