@@ -19,7 +19,7 @@ def run_http_server():
     server = HTTPServer(("0.0.0.0", port), HealthCheckHandler)
     server.serve_forever()
 
-# استارت کردن وب‌سرور در پس‌زمینه هم‌زمان با ربات
+# استارت کردن وب‌‌سرور در پس‌زمینه هم‌زمان با ربات
 threading.Thread(target=run_http_server, daemon=True).start()
 
 import os
@@ -147,7 +147,7 @@ async def stats_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f"👥 کل بازدیدها: {stats_data['total_visits']}\n"
         f"👤 کاربران یکتا: {len(stats_data['unique_users'])}\n"
         f"🛒 سفارش‌های ثبت شده: {stats_data['orders_count']}\n"
-        f"✉️️ پیام‌های دریافتی مدیریت: {stats_data['messages_count']}"
+        f"✉️ پیام‌های دریافتی مدیریت: {stats_data['messages_count']}"
     )
     await update.message.reply_text(text, parse_mode="Markdown")
 
@@ -155,6 +155,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
     data = query.data
+    
     if data == "back_to_menu":
         welcome_text = "🎬 به منوی اصلی موسسه هنری بهادر فیلم خوش آمدید.\nلطفاً بخش مورد نظر را انتخاب کنید:"
         try:
@@ -258,7 +259,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             pass
     elif data == "work_eshgh":
         kb = [[InlineKeyboardButton("🔙 بازگشت به سریال‌ها", callback_data="port_series")]]
-        caption = "❤️️ **عشق سال‌های جنگ**\n\nکارگردانی و تهیه‌کنندگی سریال با موضوع دفاع مقدس و درام اجتماعی."
+        caption = "❤️ **عشق سال‌های جنگ**\n\nکارگردانی و تهیه‌کنندگی سریال با موضوع دفاع مقدس و درام اجتماعی."
         await context.bot.send_photo(chat_id=query.message.chat_id, photo=PHOTO_IDS["work_3"], caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
         try:
             await query.message.delete()
@@ -298,7 +299,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             pass
     elif data == "work_moshtari":
         kb = [[InlineKeyboardButton("🔙 بازگشت به سریال‌ها", callback_data="port_series")]]
-        caption = "🤝 **مشتری‌مداری (۱۴۰۱)**\n\nسریال آموزشی ۳۰ قسمتی به تهیه‌کنندگی و کارگردانی علی بهادر."
+        caption = "🤝 **مشتری‌مداری (۱۴۰۱)**\n\nسریال آموزشی ۳۰ قسمتی به تهیه‌‌کنندگی و کارگردانی علی بهادر."
         await context.bot.send_photo(chat_id=query.message.chat_id, photo=PHOTO_IDS["work_8"], caption=caption, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
         try:
             await query.message.delete()
@@ -419,7 +420,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "• کارگردانی مجموعه‌ها و مینی‌سریال‌ها: «برکت»، «مشتری‌مداری»\n\n"
             "🎥 **بخش مستندها و پروژه‌های ملی:**\n"
             "• کارگردانی مستند «زندگی» (۱۳۷۰ - برنده جوایز جشنواره‌های دفاع مقدس، رشد و همدان)\n"
-            "• تولید و کارگردانی مستندهای برون‌مرزی «نوروز در ازبکستان» (برنده ۲ جایزه از جشنواره‌های برون‌مرزی IRIB) و «بدخشان بام جهان» (تاجیکستان)\n"
+            "• تولید و کارگردانی مستندهای برون‌‌مرزی «نوروز در ازبکستان» (برنده ۲ جایزه از جشنواره‌های برون‌مرزی IRIB) و «بدخشان بام جهان» (تاجیکستان)\n"
             "• تألیف و تدوین کتاب مرجع و ۱۰۱۸ صفحه‌ای «گاز؛ انرژی پاک با نیم قرن تلاش» همراه با تولید مجموعه مستند ۶۳ قسمتی (۱۳۹۵)\n\n"
             "هدف ما به تصویر کشیدن فرهنگ، هنر و تاریخ پربار ایران عزیز است."
         )
@@ -430,7 +431,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await query.message.reply_text(about_text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
     elif data == "digital_card":
         keyboard = [
-            [InlineKeyboardButton("🌐 وب‌‌‌‌سایت رسمی", url="https://alibahador.ir")],
+            [InlineKeyboardButton("🌐 وب‌‌سایت رسمی", url="https://alibahador.ir")],
             [InlineKeyboardButton("📸 اینستاگرام موسسه", url="https://instagram.com")],
             [InlineKeyboardButton("🔙 بازگشت به منوی اصلی", callback_data="back_to_menu")]
         ]
