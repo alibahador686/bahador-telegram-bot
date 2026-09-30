@@ -215,10 +215,10 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception:
             pass
         await query.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
-    elif data == "port_gas":
+  elif data == "port_gas":
         keyboard = [
             [InlineKeyboardButton("کتاب مرجع گاز (۱۰۱۸ صفحه - رونمایی با رئیس‌جمهور)", callback_data="work_gas_book")],
-            [InlineKeyboardButton("مجموعه مستند «تلاش بی‌پایان» (اورهال صنعت گاز)", callback_data="work_tash"],"work_tash"],
+            [InlineKeyboardButton("مجموعه مستند «تلاش بی‌پایان» (اورهال صنعت گاز)", callback_data="work_tash")],
             [InlineKeyboardButton("🔙 بازگشت به نمونه کارها", callback_data="portfolio")]
         ]
         text = "⛽ **پروژه‌های ملی نفت و گاز و کتاب مرجع:**\nلطفاً گزینه مورد نظر را انتخاب کنید:"
